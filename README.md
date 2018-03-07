@@ -1,2 +1,2 @@
 # doc
-Documentation for EI331 &amp; EI333 end term project
+Documentation for EI331 and EI333 end term project
