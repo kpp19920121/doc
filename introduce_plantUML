@@ -1,0 +1,27 @@
+我推荐使用PlantUML进行UML图的绘制，因为PlantUML允许使用文本直接编写UML视图；更加方便修改和交流；
+除了在STARTUML标记之内的文本都会被渲染引擎无视
+你可以使用Atom编辑器和Atom集成的PlantUML插件进行方便的图像生成，每次保存都会自动进行生成；
+
+@startuml
+    header
+        <font color=red>Warning:</font>
+        Not production design diagram
+    endheader
+
+    center footer for demonstration
+
+    User -> (Start)
+    User --> (Use the application) : A small label
+    :Main Admin: ---> (Use the application) : This is yet another label
+@enduml
+Atom集成了Git和Github的快捷按钮，支持创建分支、一键提交等。
+同时支持在文本中嵌入多个UML视图。总而言之，PlantUML和Atom结合是很方便的工具。
+
+@startuml
+    :Main Admin: as Admin
+    (PlantUML is a great tool) as (Use)
+    User <|-- Admin
+    (Use it) <|-- (Use)
+@enduml
+
+#######################################################################
