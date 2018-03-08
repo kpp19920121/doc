@@ -3,6 +3,7 @@ Documentation for EI331 and EI333 end term project
 
 本文档简单记录文件目录结构与说明，这是必要的，因为项目文档可能超过20份；
 请用PlantUML渲染文件
+```
 @startsalt
 {
     {T
@@ -20,3 +21,4 @@ Documentation for EI331 and EI333 end term project
     }
 }
 @endsalt
+```
