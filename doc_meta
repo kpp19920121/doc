@@ -3,8 +3,17 @@
 @startsalt
 {
     {T
-        + 需求定义
-        ++ 软件需求规约[征集意见中]
+        doc
+            ++README
+            ++doc_meta
+            ++documentation_convention
+            +需求定义
+                ++软件需求规约[征集意见中]
+            +构造
+                ++Java编码风格指南
+            +计划
+                ++可行性分析报告
+                ++项目开发计划
     }
 }
 @endsalt
