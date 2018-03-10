@@ -1,0 +1,504 @@
+
+Software = Programs + Data + Associated Documentation
+    Software Types
+        System Software
+        Application Software
+        Open Source Software
+        Proprietary Software
+
+Factors affecting Software Development
+    Complexity
+    Change increases the Entropy
+
+The Iron Triangle of Project Management
+    Cost / Time / Quality
+
+Software Engineering
+    Modeling
+        Environment / System <-- What to Model
+        Model = An abstract representation of a System
+        System Model
+            Object Model = Structure \ Object \ Relationship    [UCD]
+            Functional Model = Functions \ Data Flows           [CD]
+            Dynamic Model = Reaction to events \ Event Flows    [SD, SCD, AD]
+        Task Model
+            PERT Chart = Dependencies between Tasks
+            Schedule = How can this be done within the time limit?
+            Org Chart = What are the roles in the org?
+        Issues Model
+            Opened / Closed Issues;
+            Constrains posed by the client;
+            Resolutions being made
+    Problem Solving
+    Knowledge Aquisition
+    Rational Driven
+
+Problems in Software Engineering : Three ways to deal with Complexity
+    Abstraction : Modeling
+    Decomposition : OO
+        Functional Decomposition
+            Top-down, step-wise refinement
+            Buttom-up, function libraries, compose from below
+             decomposed into modules
+            Each module is a major processing step (function) in the Application
+             Domain
+        Object-Oriented Decomposition
+            Object : a concept, abstraction, or thing with sharp boundaries and
+             meaning for an Application.
+            An object has: State / Behavior / Identity
+
+            Class : a description of a group of object with common properties,
+             Behavior, Relationships, and semantics
+
+    Hierarchy
+        Part-of / Is-kind-of
+
+Software Engineering Concept
+    Domain
+        Application Domain = the user's Problem. analysis
+        Solution Domain = Object oriented design
+    @startuml
+        class Project
+        class Activity
+        class Task
+        class WorkProduct
+        class System
+        class Model
+        class Document
+        class Resources
+        class Participant
+        class Time
+        class Equipment
+
+        Project o- "*" Activity
+        Activity o- "*" Task
+        Task -- "*" Resources : consumes >
+        Task -- "*" WorkProduct : produced by <
+        WorkProduct <|-- System
+        WorkProduct <|-- Model
+        WorkProduct <|-- Document
+        Resources <|-- Participant
+        Resources <|-- Time
+        Resources <|-- Equipment
+    @enduml
+
+Object-Oriented Methodology
+    Abstraction, Encapsulation, Inheritance, Abstract Class, Concrete Class,
+     Polymorphism
+    Analysis = understanding the Problem
+    OOA = problem domain, conceptual model
+    Design = coming up with the solution
+    OOD = solution domain, software details and design decisions
+
+History of UML
+    OOAD    complex low-level Design-oriented
+    OMT     simple higher-level analysis-Oriented
+    OOSE    use classes very-high-level
+
+Development Activities
+    Software LifeCycle = Set of activities and their relationships to each other
+     to support the development of a software System
+    Requirement Elicitation
+    Analysis
+    System design
+    Object design
+    Implementation
+    Testing
+
+UML Diagrams
+    System := an origanized set of communicating parts
+    View := a subset of a Model
+        Design view
+        Process view
+        Implementation view
+        Deployment view
+        Use Case View
+    System Architecture := A set of significant decisions
+
+    SubSystems
+    Notations := graphical or textual rules for representing views
+
+    Basic building Blocks of UML
+        Things = modeling concepts
+            Structural Things : nouns
+                Classes / Collaboration / Active Class / Node / Interface /
+                 Use Case / Component
+                 @startuml
+                     skinparam class {
+                         BackgroundColor PaleGreen
+                         ArrowColor SeaGreen
+                         BorderColor SpringGreen
+                         BackgroundColor<<active>> Wheat
+                         BorderColor<<active>> Tomato
+                     }
+
+                     class Dummy <<active>> {
+                         # String data
+                         ~ void methods()
+                     }
+
+                     class NormalClass {
+                         Array<String> strings
+                     }
+
+                 @enduml
+
+                 @startuml
+                     skinparam shadowing false
+                     interface IWindow
+                     usecase Screwed
+                     component listbox
+                     node "title" as alias {
+                         database "SQLdatabase" as name {
+                             frame testingFrame {
+
+                             }
+                         }
+                     }
+                 @enduml
+            Behavioral Things : verbs
+                Interaction : behavior of a set of objects comprising of a Set
+                 of message exchanges within a particular context to accomplish
+                 a specific function.
+                StateMachine : behavior that specifies the sequences of states
+                 an object or an interaction goes through during its lifetime in
+                 response to events, together with its responses to those events
+
+            Grouping Things : organizations
+                Packages : purely conceptual, only exists at dev time. can be
+                 nested.
+                    Frameworks ? \ models ? \ SubSystems
+            Annotational Things : explanations
+
+        Relationships = ties
+            Dependency : the change of one may affect another
+                @startuml
+                    package myPackage {
+                        class C {
+                            private String string;
+                            {static} static public B b
+                        }
+                        A ...> B : Direction and text are optional
+                    }
+                @enduml
+            Association
+                @startuml
+                    A "0..1" ---- "*" B : employ >
+                @enduml
+
+            Generalization
+                @startuml
+                    SpecialArray --|> Array
+                @enduml
+            Realization
+                @startuml
+                    interface Array
+                    SpecialArray ...|> Array
+                    Room *-left- Chair :This is an aggregation
+                    Room o-- Student
+                @enduml
+
+        Diagrams : Grouping interrelated things and relationships
+            Class Diagram
+                An object sends a message to another object to invoke a method
+                    Message must reference the target
+                    The recipient only responds to the protocol
+                Used during
+                    Requirements analysis to model application domain concepts
+                    System design to model subsystems;
+                    Object Design to specify the detailed behavior and attrs;
+                Things in Class Diagram
+                    Class
+                        Name \ Attribute \ Operations
+                            Operations can have signature
+                            Attrs can have Type
+                    Instance
+                        attrs are represented with values
+                        name is underlined
+                        name can only contain class name "_:Class_"
+                    Abstract Class
+                        @startuml
+                            abstract Test {
+                                {abstract} String string(void);
+                            }
+                        @enduml
+                Associations in Class Diagram
+                    Roles : Labeling the end of associations with roles allows
+                     us to distinguish among the multiple associations
+                     originating from a class. Moreover, roles clarify the
+                     purpose of the association.
+                    Multiplicity : How many Objects the instance of a class can
+                     reference
+                        1-to-1 Association
+                        1-to-many Association
+                        many-to-many Association
+                    Direction : Who can ref who
+                    Implementation
+                        You can Implement the association at more detailed
+                         design time, or specify some details about the
+                         Association
+                        Association Classes : A class that is bounded to the
+                         association; Its attrs are related to the association;
+                         Its lifetime is bounded to the association
+                         Very much like association tables in SQLdatabase
+                            @startuml
+                            class Student {
+                            Name
+                            }
+                            Student "1" -- "1..*" Course
+                            (Student, Course) . Enrollment
+
+                            class Enrollment {
+                            drop()
+                            cancel()
+                            }
+                            @enduml
+
+                            @startuml
+                            class Student {
+                            Name: String
+                            }
+                            class Enrollment {
+                            drop()
+                            cancel()
+                            }
+                            class Course
+                            Student "1" -- "1" Enrollment
+                            Enrollment "1" -- "1..*" Course
+                            @enduml
+
+                        [???]Qualification and Qualifiers
+                            In UML, qualifiers are properties of binary
+                             associations and are an optional part of
+                             association ends. A qualifier holds a list of
+                             association attributes, each with a name and a
+                             type. Association attributes model the keys that
+                             are used to index a subset of relationship
+                             instances. A qualifier is visually represented as a
+                             rectangle attached to the qualified end of the
+                             association relationship. The list of association
+                             attributes is displayed in the qualifier box.
+                             In a navigation context, qualifiers are used to
+                             select a specific object pair from the set of all
+                             related objects in that association. In an
+                             implementation context, each qualifier value points
+                             to a unique target object. Generally, if an
+                             application requires the retrieval of data based on
+                             search keys, the model should use qualified
+                             associations.
+                    Aggregation : consists of, diamond
+                    Composition : strong aggregation, does not exists on its down
+                    Mapping Associations to Java Code
+                        @startuml
+                            StockExchange "*" -right- "*" Company : ArrayList
+                        @enduml
+                        public class StockExchange {
+                            private final ArrayList<Company> = new ArrayList<>()
+                        }
+                        class Company { ... }
+                    Inheritance : The children classes inherit the attributes
+                     and operations of the parent classes
+                Grouping in Class Diagram
+                    Packages : SubSystems can be modeled as packages
+                Construction of a Class Diagram
+                    Find New classes
+                    Review Names, Attributes and methods
+                    Find Associations between classes
+                    Label the generic Associations
+                    Determine the multiplicity of the Associations
+                    Review Associations
+                    Find Taxonomies
+
+            Object Diagram
+            Use Case Diagram
+                @startuml
+                    actor User
+                        note left of User
+                            Optional description
+                        end note
+
+                    usecase UC1 as "
+                        You can read me in
+                        several lines
+                    "
+                    User -- UC1
+                @enduml
+                Use Case : A **class** of functionality provided by the System
+                Actor : a model for an external entity which interacts
+                Scenarios : an instance of a use case. It has a name, actor
+                 instances and a Flow of Events
+                Use Case Text :
+                    Focus on the event flow between actor and System
+                    Consists of :
+                        Unique name
+                        Particiting Actors
+                        Entry Conditions
+                        Exit Conditions
+                        Flow of events : We organize the steps in the flow of
+                         events in two columns, the left column representing
+                         steps accomplished by the actor, the right column
+                         representing steps accomplished by the system. Each
+                         pair of actor–system steps represents an interaction.
+                        Quality (Special) Requirements : Quality requirements
+                         are requirements that are not related to the
+                         functionality of the system. These include constraints
+                         on the performance of the system, its implementation,
+                         the hardware platforms it runs on, and so on. Quality
+                         requirements are described in detail in Chapter 4,
+                         Requirements Elicitation.
+                Detail Level:
+                    Brief Use Case
+                    Casual Use Case
+                    Fully dressed Use Case
+                Use Case Relationship
+                    Communicate : Actor - UCs
+
+                    Extends
+                        Seldom invoked cases \ Exceptional event factored out
+                        Exception Use Cases can Extend more than one use case
+                        @startuml
+                            usecase Case
+                            usecase AnotherUC
+                            AnotherUC --> Case : <<extends>>
+                        @enduml
+                    Includes
+                        Common functionality needed in more than one UC
+                        @startuml
+                            usecase Case
+                            usecase AnotherUC
+                            AnotherUC --> Case : <<includes>>
+                        @enduml
+                    Inheritance
+                        A use case can be Abstract
+                        @startuml
+                            usecase FartError
+                            usecase AbstractError
+                            FartError --|> AbstractError
+                        @enduml
+            Interaction Diagram
+                Sequence Diagram : Time ordering of messages \ Lifelines
+                    Used during
+                        OOA : refine use case descriptions \ find Participants
+                        OOD - System Design : refine subsystem interfaces
+                    Things in Sequence Diagram:
+                        Instances \ Lifelines \ Messages \ Activations \ Dataflow
+                        Message
+                            Iteration *messageName
+                            Condition [condition]messageName
+                        Lifelines
+                            Creation   [_Name_]------
+                            Destruction X
+                            @startuml
+                                hide footbox
+                                skinparam shadowing false
+                                skinparam sequenceArrowThickness 1
+                                skinparam textAlignment center
+                                skinparam roundcorner 4
+                                skinparam maxmessagesize 60
+                                skinparam sequenceParticipant underline
+
+                                actor User
+                                participant "First Class" as A
+                                participant "Second Class" as B
+                                participant "Last Class" as C
+
+                                activate User
+                                User -> A: DoWork
+                                activate A
+
+                                A -> B: Create Request
+                                activate B
+                                create collections Other
+                                B -> Other : new
+
+                                B -> C: DoWork
+                                activate C
+                                C --> B: WorkDone
+                                destroy C
+
+                                B --> A: Request Created
+                                deactivate B
+
+                                A --> User: Done
+                                deactivate A
+                            @enduml
+
+                [Most tools do not support this]Collaboration Diagram : Structural organization \ good at Complexity
+                    [!!]Collaboration diagrams are called communication diagrams in recent versions of UML.
+                    Every thing in Collaboration Diagram is a instance of the class
+                    Link : instance of an association
+                    Legal number convention
+            State Machine Diagram
+                State : A condition satisfied by the attributes of an object
+                 In general, a state can be computed from the values of several
+                 attributes.
+
+                Transition : Represents a change of state triggered by Events
+                    Internal transition : transition that does not leave the
+                     state. Is also triggered by a event.
+                        e.g. pressLeftButton/blink next number
+                Activities : An activity is a coordinated set of actions. A state
+                 can be associated an activity that is executed as long as an
+                 object resides in this state.
+                    e.g. do\count ticks
+
+
+                Actions : fundamental units of processing that can take a set of
+                 inputs, produc a set of outputs and can change the state of the
+                 System. Actions take short time and are non-interruptable
+                    Occurances:
+                        Transition      /beep
+                        Enter a state   entry/blink hours
+                        Exit a state    exit/stop blinking
+
+                Nested state machines : State can have more state machines
+                @startuml
+                    state MeasureTime : do/count ticks
+                    state DeadBattery
+                    state SetTime : entry / blink hours \n press button1 ...
+                    [*] --> SetTime
+                    SetTime --> DeadBattery : After 20 years
+                    MeasureTime --> DeadBattery : After 20 years
+                    SetTime --> MeasureTime : After 2 min
+                    MeasureTime --> SetTime : Press Both Buttons
+                    DeadBattery --> [*]
+                @enduml
+                @startuml
+                    state Settime {
+                        state A: Sometext
+                        state B: Sometext
+                        state C: Sometext
+                        A --> B
+                        B --> C : some action
+                        C -left-> A
+                        [*] --> A
+                    }
+                @enduml
+            Activity Diagram : A special case of a state machine diagram, depicts
+             the work flow in the system In activity diagrams, you use activity
+             nodes and activity edges to model the flow of control and data
+             between actions.
+                Transition : Triggerless transition caused by completion of activities
+                https://www.ibm.com/support/knowledgecenter/SS4JE2_7.5.5/com.ibm.xtools.modeler.doc/topics/cactd.html
+                Used in
+                    Before starting a project, you can create activity diagrams
+                     to model the most important workflows.
+                    During the requirements phase, you can create activity
+                     diagrams to illustrate the flow of events that the use
+                     cases describe.
+                    During the analysis and design phases, you can use activity
+                    diagrams to help define the behavior of operations.
+                Splitting / Synchronization
+                    Control nodes : coordinate control flows in an activity
+                     activity diagram, providing mechanisms for representing
+                     decisions, concurrency and Synchronization.
+                        Decisions
+                            branches in the control flows, Condition, diamond
+                        Fork nodes and Join nodes
+
+                Swimlanes to denote Thread / Subsystem / object that implements the Activities
+            Component Diagram
+            Deployment Diagram
+        Extension mechanisms
+            Stereotype : classify
+            Constriant : A rule attached to UML element restricting its semantics
