@@ -502,3 +502,136 @@ UML Diagrams
         Extension mechanisms
             Stereotype : classify
             Constriant : A rule attached to UML element restricting its semantics
+
+TODO("what is the language with which the exams will be carried out? ")
+Requirement Elicitation
+    Requirement : a feature that the system must have or a constraint that it must satisfy to be accepted by the client;
+    Requirement Engineering : defining the requirements of the system under construction. Requirement elicitation and analysis focus only on the user’s view of the system.
+
+        Requirement Elicitation : to get the specification of the system that the client understand. It is all about communication.
+            Requirement Specification : the client, the developer, and the user identify a problem area and define a system that addresses the problem. Such a definition is called a requirements specification. The requirement specification is structured and formalized during analysis to produce an analysis model. RS only differs with Analysis model in the notation used.
+            Activities in RE :
+                Classification of RE activities :
+                    Greenfield Engineering : no prior system exists, the development starts from scratch.
+                    Reengineering : redesign and reimplementation of an existing system triggered by technology enablers.
+                    Interface Engineering (Wrapper and Adapter around existing projects) : the redesign of the user interface of an existing system. The legacy system is left untouched except for its interface, which is redesigned and reimplemented. This type of project is a reengineering project in which the legacy system cannot be discarded without entailing high costs.
+
+                Identifying actors. During this activity, developers identify the different types of users the future system will support.
+
+                Identifying scenarios
+                Identifying use cases. Once developers and users agree on a set of scenarios, developers derive from the scenarios a set of use cases that completely represent the future system. Whereas scenarios are concrete examples illustrating a single case, use cases are abstractions describing all possible cases. When describing use cases, developers determine the scope of the system.
+                Refining use cases. During this activity, developers ensure that the requirements specification is complete by detailing each use case and describing the behavior of the system in the presence of errors and exceptional conditions.
+                Identifying relationships among use cases.
+                Identifying nonfunctional requirements. During this activity, developers, users, and clients agree on aspects that are visible to the user, but not directly related to functionality. These include constraints on the performance of the system, its documentation, the resources it consumes, its security, and its quality.
+            Managing RE : TDOO("This part is particularly boring .. someone should do this.")
+                Methods of Eliciting Information, making decisions and managing dependencies among requirements and other artifacts;
+                    JAD joint Application Design : jointly developing the requirement specification.
+                    Traceability : focuses on recording, structuring, linking, grouping, and maintaining dependencies among requirements and between requirements and other work products.
+                Documenting Requirement Elicitation :
+                    RAD Requirement Analysis Document(需求分析文档) :
+
+            Analysis : results in an analysis model that the developers can unambiguously interpret.
+                Analysis Model : the Requirement Specification is structured and formalized during analysis.
+                The further refinement of the analysis model is described in Chap5
+                Heuristics for identifying initial analysis objects
+                    • Terms that developers or users must clarify to understand the use case
+                    • Recurring nouns in the use cases (e.g., Incident)
+                    • Real-world entities that the system must track (e.g., FieldOfficer, Resource)
+                    • Real-world processes that the system must track (e.g., EmergencyOperationsPlan)
+                    • Use cases (e.g., ReportEmergency)
+                    • Data sources or sinks (e.g., Printer)
+                    • Artifacts with which the user interacts (e.g., Station)
+                    • Always use application domain terms.
+        --> Analysis Model and Requirement Specification
+            the analysis model is usually expressed in a formal fashion.
+            They are both models of the system in the sense that they attempt to represent accurately the external aspects of the system.
+            Given that both models represent the same aspects of the system, requirements elicitation and analysis occur concurrently and iteratively.
+            Requirement Validation
+                Completeness : a requirement specification is complete if all possible scenarios through the system are described. Including exceptional behavior
+                Consistency : a requirement specification is consistent if it does not contradict itself.
+                Clarity : a requirement specification is unambiguous if exactly one system is defined.
+                Correctness : a specification if it represents accurately the system that the client needs and that the developers intend to build.
+            Three more Desirable Properties of a requirement Specificationf
+                Realistic : the system can be realized within constraints.
+                Verifiable : repeatable test can be designed to demonstrate that the system fulfills the requirements specification. That is, the system requirements should not have parts that are undefined terms
+                Traceable : A requirements specification is traceable if each requirement can be traced throughout the software development to its corresponding system functions, and if each system function can be traced back to its corresponding set of requirements. Traceability includes also the ability to track the dependencies among requirements, system functions, and the intermediate design artifacts, including system components, classes, methods, and object attributes. Traceability is critical for developing tests and for evaluating changes. When developing tests, traceability enables a tester to assess the coverage of a test case, that is, to identify which requirements are tested and which are not. When evaluating changes, traceability enables the analyst and the developers to identify all components and system functions that the change would impact.
+        Functional Requirements : describe the interactions between the system and its environment independent of its implementation.
+        Nonfunctional Requirements : describe aspects of the system that are not directly related to the functional behavior of the system.
+            FURPS+ model for Nonfunctional Requirements :
+                Functionality : Functional Requirements
+                Quality Requirements : URPS
+                    Usability
+                    Reliability (belongs to Dependibility which includes reliability \ robustness \ safety)
+                    Performance : response time \ throughput \ avalibility
+                    Supportability : requirements are concerned with the ease of changes to the system after deployment, including for example, adaptability (the ability to change the system to deal with additional application domain concepts), maintainability (the ability to change the system to deal with new technology or to fix defects), and internationalization (the ability to change the system to deal with additional international conventions, such as languages, units, and number formats).
+                Constraints / Pseudo Requirements ---Additional Categories of requirements typically also included
+                    Implementation requirements
+                    Interface Requirements
+                    Operations Requirements
+                    Packaging requirements
+                    Legal Requirements
+            The set of nonfunctional requirements are often conflict, therefore, the client and the developer need to prioritize the nonfunctional requirements.
+
+        Tools(Scenarios and UseCases) :
+            Scenarios : an example of system use in terms of a series of interactions between the use and the system.
+                [*] Notice that when writing Scenarios, you must use underlines to mark the participants.
+                    e.g. "__alice:FieldOfficer__"
+                Some types of scenarios :
+                    As-is Scenarios
+                    Visionary Scenarios : describes a future system
+                    Evaluation Scenarios [?] what
+                    Training Scenarios : tutorials used for introducing new users to the system.
+                    Drawing interface mock-ups often helps to find omissions in the specification and to build a more concrete picture of the system.
+            Use Case : an abstraction that describes a class of scenarios.
+                Name : should reflect the purpose rather than the actual activity.
+                Fields : The entry and exit conditions of a use case \
+                Boundary of the System : deciding which actions are accomplished by the actor and which actions are accomplished by the system.
+                Simple Use Case Writing Guide
+                    • Use cases should be named with verb phrases. The name of the use case should indicate what the user is trying to accomplish (e.g., ReportEmergency, OpenIncident).
+                    • Actors should be named with noun phrases (e.g., FieldOfficer, Dispatcher, Victim).
+                    • The boundary of the system should be clear. Steps accomplished by the actor and steps accomplished
+                    by the system should be distinguished (e.g., in Figure 4-7, system actions are indented to the right).
+                    • Use case steps in the flow of events should be phrased in the active voice. This makes it explicit who
+                    accomplished the step.
+                    • The causal relationship between successive steps should be clear.
+                    • A use case should describe a complete user transaction (e.g., the ReportEmergency use case
+                    describes all the steps between initiating the emergency reporting and receiving an acknowledgment).
+                    • Exceptions should be described separately.
+                    • A use case should not describe the user interface of the system. This takes away the focus from the
+                    actual steps accomplished by the user and is better addressed with visual mock-ups (e.g., the ReportEmergency only refers to the “Report Emergency” function, not the menu, the button, nor the actual command that corresponds to this function).
+                    • A use case should not exceed two or three pages in length. Otherwise, use include and extend relationships to decompose it in smaller use cases, as explained in Section 4.4.5.
+                Heuristics for developing scenarios and use cases
+                • Use scenarios to communicate with users and to validate functionality.
+                • First, refine a single scenario to understand the user’s assumptions about the system. The user may be familiar with similar systems, in which case, adopting specific user interface conventions would make the system more usable.
+                • Next, define many not-very-detailed scenarios to define the scope of the system. Validate with the user.
+                • Use mock-ups as visual support only; user interface design should occur as a separate task after the functionality is sufficiently stable.
+                • Present the user with multiple and very different alternatives (as opposed to extracting a single alternative from the user). Evaluating different alternatives broadens the user’s horizon. Generating different alternatives forces developers to “think outside the box.”
+                • Detail a broad vertical slice when the scope of the system and the user preferences are well
+                understood. Validate with the user.
+                Refine the UseCase :
+                • The elements that are manipulated by the system are detailed. In Figure 4-10, we added details about the attributes of the emergency reporting form and the types of incidents.
+                • The low-level sequence of interactions between the actor and the system are specified. In Figure 4-10, we added information about how the Dispatcher generates an acknowledgment by selecting resources.
+                • Access rights (which actors can invoke which use cases) are specified.
+                • Missing exceptions are identified and their handling specified.
+                • Common functionality among use cases are factored out.
+                Relationships among Actors and Use cases :
+                Communication Relationships : We use communication relationships between actors and use cases to describe the system in layers of functionality.
+                    You can use the stereotype of : <<initiate>> and <<participate>>.
+
+                Extend Relationships : We use extend relationships to separate exceptional and common flows of events.
+
+                Include Relationships : We use include relationships to reduce redundancy among use cases.
+                    [*]Behavior should be factored out only when it is shared among many ucs.
+                Difference between Extend and Include :
+                    Extended UCs usually occur often and not at specific position in the sequence of the extended UC.
+                    Include UCs occur less often and need to be specified when they are called in the sequence of their parent UC.
+                Heuristics for extend and include relationships
+                    • Use extend relationships for exceptional, optional, or seldom-occurring behavior. An example of seldom-occurring behavior is the breakdown of a resource (e.g., a fire truck). An example of optional behavior is the notification of nearby resources responding to an unrelated incident.
+                    • Use include relationships for behavior that is shared across two or more use cases.
+                    • However, use discretion when applying the above two heuristics and do not overstructure the use case model. A few longer use cases (e.g., two pages long) are easier to understand and review than many short ones (e.g., ten lines long).
+            Glossary or Data Dictionary :
+
+        Scenario-based requirement elicitation.
+            as-is scenarios
+            visionary Scenarios : describing the functionality to be provided by the future system.
+            definitions mature and stablizes, developers and the client agree on a requirements specification in the form of functional requirement, nonfunctional requirements, use cases, and scenarios.
