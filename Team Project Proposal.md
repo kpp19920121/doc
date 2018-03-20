@@ -5,6 +5,10 @@
 
 [Our Document : github/AudioAR/doc](https://github.com/AudioAR/doc/)
 
+### 项目简介
+
+如何在VR中提供真实的、能够精确辨别位置的音频是近年的技术热点。VR业界许多公司都开发了相应的工具，包括Oculus在自身的Oculus Rift中集成了空间声场功能，Google在其GVR SDK中包含了Spatial Audio，专门提供立体声音合成功能。我们的设想是通过GPS和惯性定位等定位技术，将室内和室外的环境和虚拟空间重叠，通过追踪用户头部的运动，合成逼真的音频流，构建一个简单的AR音频平台。用户可以通过物理上的移动，使用听觉观察虚拟世界。
+
 ### 基本信息
 
 队伍名称：**RecT**
