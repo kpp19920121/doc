@@ -11,6 +11,8 @@ Documentation for EI331 and EI333 end term project
             ++README
             ++doc_meta
             ++documentation_convention
+            ++team_project_proposal.md
+
             ++note : 用PlantUML编写的笔记与UML图例
             +需求定义
                 ++软件需求规约[征集意见中]
