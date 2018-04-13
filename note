@@ -1,0 +1,637 @@
+
+Software = Programs + Data + Associated Documentation
+    Software Types
+        System Software
+        Application Software
+        Open Source Software
+        Proprietary Software
+
+Factors affecting Software Development
+    Complexity
+    Change increases the Entropy
+
+The Iron Triangle of Project Management
+    Cost / Time / Quality
+
+Software Engineering
+    Modeling
+        Environment / System <-- What to Model
+        Model = An abstract representation of a System
+        System Model
+            Object Model = Structure \ Object \ Relationship    [UCD]
+            Functional Model = Functions \ Data Flows           [CD]
+            Dynamic Model = Reaction to events \ Event Flows    [SD, SCD, AD]
+        Task Model
+            PERT Chart = Dependencies between Tasks
+            Schedule = How can this be done within the time limit?
+            Org Chart = What are the roles in the org?
+        Issues Model
+            Opened / Closed Issues;
+            Constrains posed by the client;
+            Resolutions being made
+    Problem Solving
+    Knowledge Aquisition
+    Rational Driven
+
+Problems in Software Engineering : Three ways to deal with Complexity
+    Abstraction : Modeling
+    Decomposition : OO
+        Functional Decomposition
+            Top-down, step-wise refinement
+            Buttom-up, function libraries, compose from below
+             decomposed into modules
+            Each module is a major processing step (function) in the Application
+             Domain
+        Object-Oriented Decomposition
+            Object : a concept, abstraction, or thing with sharp boundaries and
+             meaning for an Application.
+            An object has: State / Behavior / Identity
+
+            Class : a description of a group of object with common properties,
+             Behavior, Relationships, and semantics
+
+    Hierarchy
+        Part-of / Is-kind-of
+
+Software Engineering Concept
+    Domain
+        Application Domain = the user's Problem. analysis
+        Solution Domain = Object oriented design
+    @startuml
+        class Project
+        class Activity
+        class Task
+        class WorkProduct
+        class System
+        class Model
+        class Document
+        class Resources
+        class Participant
+        class Time
+        class Equipment
+
+        Project o- "*" Activity
+        Activity o- "*" Task
+        Task -- "*" Resources : consumes >
+        Task -- "*" WorkProduct : produced by <
+        WorkProduct <|-- System
+        WorkProduct <|-- Model
+        WorkProduct <|-- Document
+        Resources <|-- Participant
+        Resources <|-- Time
+        Resources <|-- Equipment
+    @enduml
+
+Object-Oriented Methodology
+    Abstraction, Encapsulation, Inheritance, Abstract Class, Concrete Class,
+     Polymorphism
+    Analysis = understanding the Problem
+    OOA = problem domain, conceptual model
+    Design = coming up with the solution
+    OOD = solution domain, software details and design decisions
+
+History of UML
+    OOAD    complex low-level Design-oriented
+    OMT     simple higher-level analysis-Oriented
+    OOSE    use classes very-high-level
+
+Development Activities
+    Software LifeCycle = Set of activities and their relationships to each other
+     to support the development of a software System
+    Requirement Elicitation
+    Analysis
+    System design
+    Object design
+    Implementation
+    Testing
+
+UML Diagrams
+    System := an origanized set of communicating parts
+    View := a subset of a Model
+        Design view
+        Process view
+        Implementation view
+        Deployment view
+        Use Case View
+    System Architecture := A set of significant decisions
+
+    SubSystems
+    Notations := graphical or textual rules for representing views
+
+    Basic building Blocks of UML
+        Things = modeling concepts
+            Structural Things : nouns
+                Classes / Collaboration / Active Class / Node / Interface /
+                 Use Case / Component
+                 @startuml
+                     skinparam class {
+                         BackgroundColor PaleGreen
+                         ArrowColor SeaGreen
+                         BorderColor SpringGreen
+                         BackgroundColor<<active>> Wheat
+                         BorderColor<<active>> Tomato
+                     }
+
+                     class Dummy <<active>> {
+                         # String data
+                         ~ void methods()
+                     }
+
+                     class NormalClass {
+                         Array<String> strings
+                     }
+
+                 @enduml
+
+                 @startuml
+                     skinparam shadowing false
+                     interface IWindow
+                     usecase Screwed
+                     component listbox
+                     node "title" as alias {
+                         database "SQLdatabase" as name {
+                             frame testingFrame {
+
+                             }
+                         }
+                     }
+                 @enduml
+            Behavioral Things : verbs
+                Interaction : behavior of a set of objects comprising of a Set
+                 of message exchanges within a particular context to accomplish
+                 a specific function.
+                StateMachine : behavior that specifies the sequences of states
+                 an object or an interaction goes through during its lifetime in
+                 response to events, together with its responses to those events
+
+            Grouping Things : organizations
+                Packages : purely conceptual, only exists at dev time. can be
+                 nested.
+                    Frameworks ? \ models ? \ SubSystems
+            Annotational Things : explanations
+
+        Relationships = ties
+            Dependency : the change of one may affect another
+                @startuml
+                    package myPackage {
+                        class C {
+                            private String string;
+                            {static} static public B b
+                        }
+                        A ...> B : Direction and text are optional
+                    }
+                @enduml
+            Association
+                @startuml
+                    A "0..1" ---- "*" B : employ >
+                @enduml
+
+            Generalization
+                @startuml
+                    SpecialArray --|> Array
+                @enduml
+            Realization
+                @startuml
+                    interface Array
+                    SpecialArray ...|> Array
+                    Room *-left- Chair :This is an aggregation
+                    Room o-- Student
+                @enduml
+
+        Diagrams : Grouping interrelated things and relationships
+            Class Diagram
+                An object sends a message to another object to invoke a method
+                    Message must reference the target
+                    The recipient only responds to the protocol
+                Used during
+                    Requirements analysis to model application domain concepts
+                    System design to model subsystems;
+                    Object Design to specify the detailed behavior and attrs;
+                Things in Class Diagram
+                    Class
+                        Name \ Attribute \ Operations
+                            Operations can have signature
+                            Attrs can have Type
+                    Instance
+                        attrs are represented with values
+                        name is underlined
+                        name can only contain class name "_:Class_"
+                    Abstract Class
+                        @startuml
+                            abstract Test {
+                                {abstract} String string(void);
+                            }
+                        @enduml
+                Associations in Class Diagram
+                    Roles : Labeling the end of associations with roles allows
+                     us to distinguish among the multiple associations
+                     originating from a class. Moreover, roles clarify the
+                     purpose of the association.
+                    Multiplicity : How many Objects the instance of a class can
+                     reference
+                        1-to-1 Association
+                        1-to-many Association
+                        many-to-many Association
+                    Direction : Who can ref who
+                    Implementation
+                        You can Implement the association at more detailed
+                         design time, or specify some details about the
+                         Association
+                        Association Classes : A class that is bounded to the
+                         association; Its attrs are related to the association;
+                         Its lifetime is bounded to the association
+                         Very much like association tables in SQLdatabase
+                            @startuml
+                            class Student {
+                            Name
+                            }
+                            Student "1" -- "1..*" Course
+                            (Student, Course) . Enrollment
+
+                            class Enrollment {
+                            drop()
+                            cancel()
+                            }
+                            @enduml
+
+                            @startuml
+                            class Student {
+                            Name: String
+                            }
+                            class Enrollment {
+                            drop()
+                            cancel()
+                            }
+                            class Course
+                            Student "1" -- "1" Enrollment
+                            Enrollment "1" -- "1..*" Course
+                            @enduml
+
+                        [???]Qualification and Qualifiers
+                            In UML, qualifiers are properties of binary
+                             associations and are an optional part of
+                             association ends. A qualifier holds a list of
+                             association attributes, each with a name and a
+                             type. Association attributes model the keys that
+                             are used to index a subset of relationship
+                             instances. A qualifier is visually represented as a
+                             rectangle attached to the qualified end of the
+                             association relationship. The list of association
+                             attributes is displayed in the qualifier box.
+                             In a navigation context, qualifiers are used to
+                             select a specific object pair from the set of all
+                             related objects in that association. In an
+                             implementation context, each qualifier value points
+                             to a unique target object. Generally, if an
+                             application requires the retrieval of data based on
+                             search keys, the model should use qualified
+                             associations.
+                    Aggregation : consists of, diamond
+                    Composition : strong aggregation, does not exists on its down
+                    Mapping Associations to Java Code
+                        @startuml
+                            StockExchange "*" -right- "*" Company : ArrayList
+                        @enduml
+                        public class StockExchange {
+                            private final ArrayList<Company> = new ArrayList<>()
+                        }
+                        class Company { ... }
+                    Inheritance : The children classes inherit the attributes
+                     and operations of the parent classes
+                Grouping in Class Diagram
+                    Packages : SubSystems can be modeled as packages
+                Construction of a Class Diagram
+                    Find New classes
+                    Review Names, Attributes and methods
+                    Find Associations between classes
+                    Label the generic Associations
+                    Determine the multiplicity of the Associations
+                    Review Associations
+                    Find Taxonomies
+
+            Object Diagram
+            Use Case Diagram
+                @startuml
+                    actor User
+                        note left of User
+                            Optional description
+                        end note
+
+                    usecase UC1 as "
+                        You can read me in
+                        several lines
+                    "
+                    User -- UC1
+                @enduml
+                Use Case : A **class** of functionality provided by the System
+                Actor : a model for an external entity which interacts
+                Scenarios : an instance of a use case. It has a name, actor
+                 instances and a Flow of Events
+                Use Case Text :
+                    Focus on the event flow between actor and System
+                    Consists of :
+                        Unique name
+                        Particiting Actors
+                        Entry Conditions
+                        Exit Conditions
+                        Flow of events : We organize the steps in the flow of
+                         events in two columns, the left column representing
+                         steps accomplished by the actor, the right column
+                         representing steps accomplished by the system. Each
+                         pair of actor–system steps represents an interaction.
+                        Quality (Special) Requirements : Quality requirements
+                         are requirements that are not related to the
+                         functionality of the system. These include constraints
+                         on the performance of the system, its implementation,
+                         the hardware platforms it runs on, and so on. Quality
+                         requirements are described in detail in Chapter 4,
+                         Requirements Elicitation.
+                Detail Level:
+                    Brief Use Case
+                    Casual Use Case
+                    Fully dressed Use Case
+                Use Case Relationship
+                    Communicate : Actor - UCs
+
+                    Extends
+                        Seldom invoked cases \ Exceptional event factored out
+                        Exception Use Cases can Extend more than one use case
+                        @startuml
+                            usecase Case
+                            usecase AnotherUC
+                            AnotherUC --> Case : <<extends>>
+                        @enduml
+                    Includes
+                        Common functionality needed in more than one UC
+                        @startuml
+                            usecase Case
+                            usecase AnotherUC
+                            AnotherUC --> Case : <<includes>>
+                        @enduml
+                    Inheritance
+                        A use case can be Abstract
+                        @startuml
+                            usecase FartError
+                            usecase AbstractError
+                            FartError --|> AbstractError
+                        @enduml
+            Interaction Diagram
+                Sequence Diagram : Time ordering of messages \ Lifelines
+                    Used during
+                        OOA : refine use case descriptions \ find Participants
+                        OOD - System Design : refine subsystem interfaces
+                    Things in Sequence Diagram:
+                        Instances \ Lifelines \ Messages \ Activations \ Dataflow
+                        Message
+                            Iteration *messageName
+                            Condition [condition]messageName
+                        Lifelines
+                            Creation   [_Name_]------
+                            Destruction X
+                            @startuml
+                                hide footbox
+                                skinparam shadowing false
+                                skinparam sequenceArrowThickness 1
+                                skinparam textAlignment center
+                                skinparam roundcorner 4
+                                skinparam maxmessagesize 60
+                                skinparam sequenceParticipant underline
+
+                                actor User
+                                participant "First Class" as A
+                                participant "Second Class" as B
+                                participant "Last Class" as C
+
+                                activate User
+                                User -> A: DoWork
+                                activate A
+
+                                A -> B: Create Request
+                                activate B
+                                create collections Other
+                                B -> Other : new
+
+                                B -> C: DoWork
+                                activate C
+                                C --> B: WorkDone
+                                destroy C
+
+                                B --> A: Request Created
+                                deactivate B
+
+                                A --> User: Done
+                                deactivate A
+                            @enduml
+
+                [Most tools do not support this]Collaboration Diagram : Structural organization \ good at Complexity
+                    [!!]Collaboration diagrams are called communication diagrams in recent versions of UML.
+                    Every thing in Collaboration Diagram is a instance of the class
+                    Link : instance of an association
+                    Legal number convention
+            State Machine Diagram
+                State : A condition satisfied by the attributes of an object
+                 In general, a state can be computed from the values of several
+                 attributes.
+
+                Transition : Represents a change of state triggered by Events
+                    Internal transition : transition that does not leave the
+                     state. Is also triggered by a event.
+                        e.g. pressLeftButton/blink next number
+                Activities : An activity is a coordinated set of actions. A state
+                 can be associated an activity that is executed as long as an
+                 object resides in this state.
+                    e.g. do\count ticks
+
+
+                Actions : fundamental units of processing that can take a set of
+                 inputs, produc a set of outputs and can change the state of the
+                 System. Actions take short time and are non-interruptable
+                    Occurances:
+                        Transition      /beep
+                        Enter a state   entry/blink hours
+                        Exit a state    exit/stop blinking
+
+                Nested state machines : State can have more state machines
+                @startuml
+                    state MeasureTime : do/count ticks
+                    state DeadBattery
+                    state SetTime : entry / blink hours \n press button1 ...
+                    [*] --> SetTime
+                    SetTime --> DeadBattery : After 20 years
+                    MeasureTime --> DeadBattery : After 20 years
+                    SetTime --> MeasureTime : After 2 min
+                    MeasureTime --> SetTime : Press Both Buttons
+                    DeadBattery --> [*]
+                @enduml
+                @startuml
+                    state Settime {
+                        state A: Sometext
+                        state B: Sometext
+                        state C: Sometext
+                        A --> B
+                        B --> C : some action
+                        C -left-> A
+                        [*] --> A
+                    }
+                @enduml
+            Activity Diagram : A special case of a state machine diagram, depicts
+             the work flow in the system In activity diagrams, you use activity
+             nodes and activity edges to model the flow of control and data
+             between actions.
+                Transition : Triggerless transition caused by completion of activities
+                https://www.ibm.com/support/knowledgecenter/SS4JE2_7.5.5/com.ibm.xtools.modeler.doc/topics/cactd.html
+                Used in
+                    Before starting a project, you can create activity diagrams
+                     to model the most important workflows.
+                    During the requirements phase, you can create activity
+                     diagrams to illustrate the flow of events that the use
+                     cases describe.
+                    During the analysis and design phases, you can use activity
+                    diagrams to help define the behavior of operations.
+                Splitting / Synchronization
+                    Control nodes : coordinate control flows in an activity
+                     activity diagram, providing mechanisms for representing
+                     decisions, concurrency and Synchronization.
+                        Decisions
+                            branches in the control flows, Condition, diamond
+                        Fork nodes and Join nodes
+
+                Swimlanes to denote Thread / Subsystem / object that implements the Activities
+            Component Diagram
+            Deployment Diagram
+        Extension mechanisms
+            Stereotype : classify
+            Constriant : A rule attached to UML element restricting its semantics
+
+TODO("what is the language with which the exams will be carried out? ")
+Requirement Elicitation
+    Requirement : a feature that the system must have or a constraint that it must satisfy to be accepted by the client;
+    Requirement Engineering : defining the requirements of the system under construction. Requirement elicitation and analysis focus only on the user’s view of the system.
+
+        Requirement Elicitation : to get the specification of the system that the client understand. It is all about communication.
+            Requirement Specification : the client, the developer, and the user identify a problem area and define a system that addresses the problem. Such a definition is called a requirements specification. The requirement specification is structured and formalized during analysis to produce an analysis model. RS only differs with Analysis model in the notation used.
+            Activities in RE :
+                Classification of RE activities :
+                    Greenfield Engineering : no prior system exists, the development starts from scratch.
+                    Reengineering : redesign and reimplementation of an existing system triggered by technology enablers.
+                    Interface Engineering (Wrapper and Adapter around existing projects) : the redesign of the user interface of an existing system. The legacy system is left untouched except for its interface, which is redesigned and reimplemented. This type of project is a reengineering project in which the legacy system cannot be discarded without entailing high costs.
+
+                Identifying actors. During this activity, developers identify the different types of users the future system will support.
+
+                Identifying scenarios
+                Identifying use cases. Once developers and users agree on a set of scenarios, developers derive from the scenarios a set of use cases that completely represent the future system. Whereas scenarios are concrete examples illustrating a single case, use cases are abstractions describing all possible cases. When describing use cases, developers determine the scope of the system.
+                Refining use cases. During this activity, developers ensure that the requirements specification is complete by detailing each use case and describing the behavior of the system in the presence of errors and exceptional conditions.
+                Identifying relationships among use cases.
+                Identifying nonfunctional requirements. During this activity, developers, users, and clients agree on aspects that are visible to the user, but not directly related to functionality. These include constraints on the performance of the system, its documentation, the resources it consumes, its security, and its quality.
+            Managing RE : TDOO("This part is particularly boring .. someone should do this.")
+                Methods of Eliciting Information, making decisions and managing dependencies among requirements and other artifacts;
+                    JAD joint Application Design : jointly developing the requirement specification.
+                    Traceability : focuses on recording, structuring, linking, grouping, and maintaining dependencies among requirements and between requirements and other work products.
+                Documenting Requirement Elicitation :
+                    RAD Requirement Analysis Document(需求分析文档) :
+
+            Analysis : results in an analysis model that the developers can unambiguously interpret.
+                Analysis Model : the Requirement Specification is structured and formalized during analysis.
+                The further refinement of the analysis model is described in Chap5
+                Heuristics for identifying initial analysis objects
+                    • Terms that developers or users must clarify to understand the use case
+                    • Recurring nouns in the use cases (e.g., Incident)
+                    • Real-world entities that the system must track (e.g., FieldOfficer, Resource)
+                    • Real-world processes that the system must track (e.g., EmergencyOperationsPlan)
+                    • Use cases (e.g., ReportEmergency)
+                    • Data sources or sinks (e.g., Printer)
+                    • Artifacts with which the user interacts (e.g., Station)
+                    • Always use application domain terms.
+        --> Analysis Model and Requirement Specification
+            the analysis model is usually expressed in a formal fashion.
+            They are both models of the system in the sense that they attempt to represent accurately the external aspects of the system.
+            Given that both models represent the same aspects of the system, requirements elicitation and analysis occur concurrently and iteratively.
+            Requirement Validation
+                Completeness : a requirement specification is complete if all possible scenarios through the system are described. Including exceptional behavior
+                Consistency : a requirement specification is consistent if it does not contradict itself.
+                Clarity : a requirement specification is unambiguous if exactly one system is defined.
+                Correctness : a specification if it represents accurately the system that the client needs and that the developers intend to build.
+            Three more Desirable Properties of a requirement Specificationf
+                Realistic : the system can be realized within constraints.
+                Verifiable : repeatable test can be designed to demonstrate that the system fulfills the requirements specification. That is, the system requirements should not have parts that are undefined terms
+                Traceable : A requirements specification is traceable if each requirement can be traced throughout the software development to its corresponding system functions, and if each system function can be traced back to its corresponding set of requirements. Traceability includes also the ability to track the dependencies among requirements, system functions, and the intermediate design artifacts, including system components, classes, methods, and object attributes. Traceability is critical for developing tests and for evaluating changes. When developing tests, traceability enables a tester to assess the coverage of a test case, that is, to identify which requirements are tested and which are not. When evaluating changes, traceability enables the analyst and the developers to identify all components and system functions that the change would impact.
+        Functional Requirements : describe the interactions between the system and its environment independent of its implementation.
+        Nonfunctional Requirements : describe aspects of the system that are not directly related to the functional behavior of the system.
+            FURPS+ model for Nonfunctional Requirements :
+                Functionality : Functional Requirements
+                Quality Requirements : URPS
+                    Usability
+                    Reliability (belongs to Dependibility which includes reliability \ robustness \ safety)
+                    Performance : response time \ throughput \ avalibility
+                    Supportability : requirements are concerned with the ease of changes to the system after deployment, including for example, adaptability (the ability to change the system to deal with additional application domain concepts), maintainability (the ability to change the system to deal with new technology or to fix defects), and internationalization (the ability to change the system to deal with additional international conventions, such as languages, units, and number formats).
+                Constraints / Pseudo Requirements ---Additional Categories of requirements typically also included
+                    Implementation requirements
+                    Interface Requirements
+                    Operations Requirements
+                    Packaging requirements
+                    Legal Requirements
+            The set of nonfunctional requirements are often conflict, therefore, the client and the developer need to prioritize the nonfunctional requirements.
+
+        Tools(Scenarios and UseCases) :
+            Scenarios : an example of system use in terms of a series of interactions between the use and the system.
+                [*] Notice that when writing Scenarios, you must use underlines to mark the participants.
+                    e.g. "__alice:FieldOfficer__"
+                Some types of scenarios :
+                    As-is Scenarios
+                    Visionary Scenarios : describes a future system
+                    Evaluation Scenarios [?] what
+                    Training Scenarios : tutorials used for introducing new users to the system.
+                    Drawing interface mock-ups often helps to find omissions in the specification and to build a more concrete picture of the system.
+            Use Case : an abstraction that describes a class of scenarios.
+                Name : should reflect the purpose rather than the actual activity.
+                Fields : The entry and exit conditions of a use case \
+                Boundary of the System : deciding which actions are accomplished by the actor and which actions are accomplished by the system.
+                Simple Use Case Writing Guide
+                    • Use cases should be named with verb phrases. The name of the use case should indicate what the user is trying to accomplish (e.g., ReportEmergency, OpenIncident).
+                    • Actors should be named with noun phrases (e.g., FieldOfficer, Dispatcher, Victim).
+                    • The boundary of the system should be clear. Steps accomplished by the actor and steps accomplished
+                    by the system should be distinguished (e.g., in Figure 4-7, system actions are indented to the right).
+                    • Use case steps in the flow of events should be phrased in the active voice. This makes it explicit who
+                    accomplished the step.
+                    • The causal relationship between successive steps should be clear.
+                    • A use case should describe a complete user transaction (e.g., the ReportEmergency use case
+                    describes all the steps between initiating the emergency reporting and receiving an acknowledgment).
+                    • Exceptions should be described separately.
+                    • A use case should not describe the user interface of the system. This takes away the focus from the
+                    actual steps accomplished by the user and is better addressed with visual mock-ups (e.g., the ReportEmergency only refers to the “Report Emergency” function, not the menu, the button, nor the actual command that corresponds to this function).
+                    • A use case should not exceed two or three pages in length. Otherwise, use include and extend relationships to decompose it in smaller use cases, as explained in Section 4.4.5.
+                Heuristics for developing scenarios and use cases
+                • Use scenarios to communicate with users and to validate functionality.
+                • First, refine a single scenario to understand the user’s assumptions about the system. The user may be familiar with similar systems, in which case, adopting specific user interface conventions would make the system more usable.
+                • Next, define many not-very-detailed scenarios to define the scope of the system. Validate with the user.
+                • Use mock-ups as visual support only; user interface design should occur as a separate task after the functionality is sufficiently stable.
+                • Present the user with multiple and very different alternatives (as opposed to extracting a single alternative from the user). Evaluating different alternatives broadens the user’s horizon. Generating different alternatives forces developers to “think outside the box.”
+                • Detail a broad vertical slice when the scope of the system and the user preferences are well
+                understood. Validate with the user.
+                Refine the UseCase :
+                • The elements that are manipulated by the system are detailed. In Figure 4-10, we added details about the attributes of the emergency reporting form and the types of incidents.
+                • The low-level sequence of interactions between the actor and the system are specified. In Figure 4-10, we added information about how the Dispatcher generates an acknowledgment by selecting resources.
+                • Access rights (which actors can invoke which use cases) are specified.
+                • Missing exceptions are identified and their handling specified.
+                • Common functionality among use cases are factored out.
+                Relationships among Actors and Use cases :
+                Communication Relationships : We use communication relationships between actors and use cases to describe the system in layers of functionality.
+                    You can use the stereotype of : <<initiate>> and <<participate>>.
+
+                Extend Relationships : We use extend relationships to separate exceptional and common flows of events.
+
+                Include Relationships : We use include relationships to reduce redundancy among use cases.
+                    [*]Behavior should be factored out only when it is shared among many ucs.
+                Difference between Extend and Include :
+                    Extended UCs usually occur often and not at specific position in the sequence of the extended UC.
+                    Include UCs occur less often and need to be specified when they are called in the sequence of their parent UC.
+                Heuristics for extend and include relationships
+                    • Use extend relationships for exceptional, optional, or seldom-occurring behavior. An example of seldom-occurring behavior is the breakdown of a resource (e.g., a fire truck). An example of optional behavior is the notification of nearby resources responding to an unrelated incident.
+                    • Use include relationships for behavior that is shared across two or more use cases.
+                    • However, use discretion when applying the above two heuristics and do not overstructure the use case model. A few longer use cases (e.g., two pages long) are easier to understand and review than many short ones (e.g., ten lines long).
+            Glossary or Data Dictionary :
+
+        Scenario-based requirement elicitation.
+            as-is scenarios
+            visionary Scenarios : describing the functionality to be provided by the future system.
+            definitions mature and stablizes, developers and the client agree on a requirements specification in the form of functional requirement, nonfunctional requirements, use cases, and scenarios.
