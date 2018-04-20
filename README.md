@@ -20,6 +20,11 @@ Documentation for EI331 and EI333 end term project
                 ++可行性研究报告.md
                 ++项目开发计划.md
                 ++风险列表.md
+            +分析
+                ++软件需求规约.md
+            +设计
+                ++软件设计模型.md
+                ++软件架构文档.md
     }
 }
 @endsalt
