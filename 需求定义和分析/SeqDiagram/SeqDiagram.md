@@ -1,170 +1,312 @@
-# 系统消息顺序图
+createcontrol# 系统消息顺序图
 ## 1.Register
-![SeqDiagram](./register.svg)
-```
+![SeqDiagram](./SeqDiagram.svg)
+```PlantUML
 @startuml
-actor ":__User__" as User
-boundary ":__RegisterPage__" as RegisterPage
-control ":__UserInfoControl__" as UserInfoControl
-entity ":__u__" as User_Object
+hide footbox
+skinparam sequenceParticipant underline
 
-activate User
-User -> RegisterPage: register
-activate RegisterPage
-RegisterPage -> UserInfoControl: <<create>>
-activate UserInfoControl
-User -> RegisterPage: submitUserInfo()
-loop invalid
-    User -> RegisterPage: submitUserInfo()
+actor User as user
+participant ":RegisterPage" as boundary
+participant ":UserInfoControl" as control
+participant ":User" as userdata
+participant ":LocalVSSManagerPage" as nextpage
+
+create control
+boundary -> control: <<create>>
+user -> boundary: enterRegisterData
+boundary -> control: sendRegisterData
+control -> control: checkRegisterData
+loop wrong input
+    control --> boundary: registerDataWrong
+    user -> boundary: enterRegisterData
+    boundary -> control: sendRegisterData
+    control -> control: checkRegisterData
 end
-deactivate User
-deactivate RegisterPage
-UserInfoControl -> User_Object: <<create>>
-deactivate UserInfoControl
-activate User_Object
-deactivate User_Object
+control --> boundary: registerSuccess
+create userdata
+control -> userdata: <<create>>
+control -> control: setCurrentUser
+control -> boundary: <<destroy>>
+destroy boundary
+create nextpage
+control -> nextpage: <<create>>
+destroy control
 @enduml
 ```
 ## 2.Login
-![SeqDiagram](./login.svg)
-```
+![SeqDiagram](./SeqDiagram_001.svg)
+```PlantUML
 @startuml
-actor ":__User__" as User
-boundary ":__LoginPage__" as LoginPage
-control ":__UserInfoControl__" as UserInfoControl
+hide footbox
+skinparam sequenceParticipant underline
 
-activate User
-User -> LoginPage: Login
-activate LoginPage
-LoginPage -> UserInfoControl: <<create>>
-activate UserInfoControl
-loop invalid
-    User -> LoginPage: Login
+actor User as user
+participant ":LoginPage" as boundary
+participant ":UserInfoControl" as control
+participant ":User" as userdata
+participant ":LocalVSSManagerPage" as nextpage
+
+create control
+boundary -> control: <<create>>
+user -> boundary: enterLoginData
+boundary -> control: sendLoginData
+control -> control: checkLoginData
+loop wrong password or username
+    control --> boundary: loginDataWrong
+    user -> boundary: enterLoginData
+    boundary -> control: sendLoginData
+    control -> control: checkLoginData
 end
-deactivate User
-deactivate LoginPage
-deactivate UserInfoControl
+control --> boundary: LoginSuccess
+create userdata
+control -> userdata: <<create>>
+control -> control: setCurrentUser
+alt remember me selected
+    control -> control: setRememberUser
+end
+control -> boundary: <<destroy>>
+destroy boundary
+create nextpage
+control -> nextpage: <<create>>
+destroy control
 @enduml
 ```
 ## 3.ManageLocalVSSLibrary
-![SeqDiagram](./managelocalvsslibrary.svg)
-```
+![SeqDiagram](./SeqDiagram_002.svg)
+```PlantUML
 @startuml
-actor ":__User__" as User
-boundary ":__LocalVSSManagerPage__" as LocalVSSManagerPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
+hide footbox
+skinparam sequenceParticipant underline
 
-activate User
-User -> LocalVSSManagerPage: ManageLocalVSSLibrary
-activate LocalVSSManagerPage
-LocalVSSManagerPage -> LocalVSSLibraryControl: <<create>>
-activate LocalVSSLibraryControl
+actor User as user
+participant ":LocalVSSManagerPage" as boundary
 
-alt Create Operation
-    User -> LocalVSSManagerPage: CreateVSS
-    LocalVSSLibraryControl -> CreateVSS
-else Rename Operation
-    User -> LocalVSSManagerPage: RenameVSS
-    LocalVSSLibraryControl -> RenameVSS
-else Delete Operation
-    User -> LocalVSSManagerPage: DeleteVSS
-    LocalVSSLibraryControl -> DeleteVSS
-else Upload Operation
-    User -> LocalVSSManagerPage: UploadVSS
-    LocalVSSLibraryControl -> UploadVSS
-else Preview Operation
-    User -> LocalVSSManagerPage: PreviewVSS
-    LocalVSSLibraryControl -> PreviewVSS
+alt CreateVSS
+    user -> boundary: createVSS
+    ...
+else RenameVSS
+    user -> boundary: renameVSS
+    ...
+else DeleteVSS
+    user -> boundary: deleteVSS
+    ...
+else UploadVSS
+    user -> boundary: uploadVSS
+    ...
+else PreviewVSS
+    user -> boundary: previewVSS
+    ...
 end
-
-deactivate LocalVSSManagerPage
-deactivate LocalVSSLibraryControl
-deactivate User
 @enduml
 ```
 ## 4.CreateVSS
-![SeqDiagram](./createvss.svg)
-```
+![SeqDiagram](./SeqDiagram_003.svg)
+```PlantUML
 @startuml
-actor ":__User__" as User
-boundary ":__CreateVSSPage__" as CreateVSSPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
+hide footbox
+skinparam sequenceParticipant underline
 
-activate User
-User -> CreateVSSPage: CreateVSS
-activate CreateVSSPage
-CreateVSSPage -> LocalVSSLibraryControl: <<create>>
-activate LocalVSSLibraryControl
-alt MapMode
-    User -> CreateVSSPage: CreateMapModeVSS
-    LocalVSSLibraryControl -> CreateMapModeVSS
-else ConcertMode
-    User -> CreateVSSPage: CreateConcertModeVSS
-    LocalVSSLibraryControl -> CreateConcertModeVSS
-end
-deactivate CreateVSSPage
-deactivate LocalVSSLibraryControl
-deactivate User
+
+actor User as user
+participant ":LocalVSSManagerPage" as boundary
+participant ":LocalVSSLibraryControl" as control
+participant ":MapVSSCreateControl" as createboundary
+participant ":MapVSSCreateControl" as createcontrol
+participant ":LocalSoundSpaceLibrary" as library
+participant ":SensorControl" as sensorcontrol
+participant ":Sensor" as sensor
+
+
+
+user -> boundary: createVSS
+boundary -> control: createVSS
+create createboundary
+control -> createboundary: <<create>>
+create createcontrol
+createboundary -> createcontrol: <<create>>
+create sensorcontrol
+createcontrol -> sensorcontrol: <<create>>
+create sensor
+sensorcontrol -> sensor: <<create>>
+loop add music
+
 @enduml
 ```
 ## 5.CreateMapModeVSS
-![SeqDiagram](./createmapmodevss.svg)
-```
+![SeqDiagram](./SeqDiagram_004.svg)
+```PlantUML
 @startuml
-actor ":__User__" as User
-boundary ":__LocalVSSManagerPage__" as LocalVSSManagerPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
-entity ":__MapModeVirtualSoundSpace__" as MapModeVirtualSoundSpace
+hide footbox
+skinparam sequenceParticipant underline
 
-activate User
-activate LocalVSSManagerPage
-LocalVSSManagerPage -> LocalVSSLibraryControl: <<create>>
-activate LocalVSSLibraryControl
-User -> LocalVSSManagerPage: LocationData
-User -> LocalVSSManagerPage: CreateMapModeVSS()
-LocalVSSLibraryControl -> MapModeVirtualSoundSpace: <<create>>
-activate MapModeVirtualSoundSpace
-deactivate MapModeVirtualSoundSpace
-alt delete
-    User -> LocalVSSManagerPage: Delete
-    activate MapModeVirtualSoundSpace
-    LocalVSSLibraryControl -> MapModeVirtualSoundSpace: <<destroy>>
-    deactivate MapModeVirtualSoundSpace
+
+actor User as user
+participant ":LocalVSSManagerPage" as boundary
+participant ":LocalVSSLibraryControl" as control
+participant ":MapVSSCreatePage" as createboundary
+participant ":MapVSSCreateControl" as createcontrol
+participant ":LocalSoundSpaceLibrary" as library
+participant ":SensorControl" as sensorcontrol
+participant ":Sensor" as sensor
+collections "soundSpaces:VirtualSoundSpace" as vsses
+participant "newSoundSpace:MapModeVirtualSoundSpace" as newspace
+
+
+
+user -> boundary: createMapModeVSS
+boundary -> control: createMapModeVSS
+create createboundary
+control -> createboundary: <<create>>
+create createcontrol
+createboundary -> createcontrol: <<create>>
+create newspace
+createcontrol -> newspace: <<create>>
+create sensorcontrol
+createcontrol -> sensorcontrol: <<create>>
+create sensor
+sensorcontrol -> sensor: <<create>>
+loop add virual sound source
+    alt add from library
+        user -> createboundary: selectExistedSoundSource
+        createboundary -> createcontrol: getLocalSoundFragments
+        createcontrol -> library: getLocalSoundFragments
+        loop for each
+            library -> vsses: getSoundSources
+            vsses --> library: soundSources
+        end
+        library --> createcontrol: filteredSoundFragments
+        createcontrol --> createboundary: displayAvailableLocalSoundFragments
+        user -> createboundary: selectSoundFragment
+        createboundary -> createcontrol: addSoundFragment
+    else add from file
+        user -> createboundary: selectFromFileSystem
+        ...somehow MapVSSCreateControl got the new SoundFragment # specify during implementation...
+
+    end
+
+    createcontrol -> sensorcontrol: getCurrentLocation
+    sensorcontrol -> sensor: getCurrentLocation
+    sensor --> sensorcontrol: currentLocation
+    sensorcontrol -> createcontrol: currentLocation
+
+    participant ":SoundSource" as source
+    create source
+    createcontrol -> source: <<create>>
+    createcontrol -> source: setSoundFragment
+    createcontrol -> source: setLocation
+
+    alt user choose to alter position
+        user -> createboundary: setCurrentSoundSourceLocation
+        createboundary -> source: setLocation
+    end
+    user -> createboundary: setSoundSourceMode
+    createboundary -> createcontrol: setSoundSourceMode
+    createcontrol -> source: setSoundSourceMode
+    createcontrol -> newspace: addSoundSource(soundSource)
+    user -> createboundary: setVSSNameAndDescription
+    createboundary -> createcontrol: setVSSNameAndDescription
+    createcontrol -> newspace: setVSSNameAndDescription
+    user -> createboundary: comfirmVSSCreation
+    createboundary -> createcontrol: comfirmVSSCreation
+    createcontrol -> library: addSoundSpace(newSoundSpace)
+    createcontrol -> sensorcontrol: <<destroy>>
+    sensorcontrol -> sensor: <<destroy>>
+    destroy sensorcontrol
+    destroy sensor
+    createcontrol -> createboundary: <<destroy>>
+    destroy createboundary
+    destroy createcontrol
+
+
 end
-deactivate LocalVSSLibraryControl
-deactivate LocalVSSManagerPage
-deactivate User
 @enduml
 ```
+
 ## 6.CreateConcertModeVSS
-![SeqDiagram](./createconcertmodevss.svg)
-```@startuml
-actor ":__User__" as User
-boundary ":__LocalVSSManagerPage__" as LocalVSSManagerPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
-entity ":__ConcertModeVirtualSoundSpace__" as ConcertModeVirtualSoundSpace
 
-activate User
-activate LocalVSSManagerPage
-LocalVSSManagerPage -> LocalVSSLibraryControl: <<create>>
-activate LocalVSSLibraryControl
-User -> LocalVSSManagerPage: CreateMapModeVSS()
-LocalVSSLibraryControl -> ConcertModeVirtualSoundSpace: <<create>>
-activate ConcertModeVirtualSoundSpace
-deactivate ConcertModeVirtualSoundSpace
-alt delete
-    User -> LocalVSSManagerPage: Delete
-    activate ConcertModeVirtualSoundSpace
-    LocalVSSLibraryControl -> ConcertModeVirtualSoundSpace: <<destroy>>
-    deactivate ConcertModeVirtualSoundSpace
+![SeqDiagram](./SeqDiagram_005.svg)
+
+```PlantUML
+@startuml
+hide footbox
+skinparam sequenceParticipant underline
+
+
+actor User as user
+participant ":LocalVSSManagerPage" as boundary
+participant ":LocalVSSLibraryControl" as control
+participant ":ConcertVSSCreatePage" as createboundary
+participant ":ConcertVSSCreateControl" as createcontrol
+participant ":LocalSoundSpaceLibrary" as library
+participant ":SensorControl" as sensorcontrol
+participant ":Sensor" as sensor
+collections "soundSpaces:VirtualSoundSpace" as vsses
+participant "newSoundSpace:ConcertModeVirtualSoundSpace" as newspace
+
+
+
+user -> boundary: createConcertModeVSS
+boundary -> control: createConcertModeVSS
+create createboundary
+control -> createboundary: <<create>>
+create createcontrol
+createboundary -> createcontrol: <<create>>
+create newspace
+createcontrol -> newspace: <<create>>
+create sensorcontrol
+createcontrol -> sensorcontrol: <<create>>
+create sensor
+sensorcontrol -> sensor: <<create>>
+loop add virual sound source
+    alt add from library
+        user -> createboundary: selectExistedSoundSource
+        createboundary -> createcontrol: getLocalSoundFragments
+        createcontrol -> library: getLocalSoundFragments
+        loop for each
+            library -> vsses: getSoundSources
+            vsses --> library: soundSources
+        end
+        library --> createcontrol: filteredSoundFragments
+        createcontrol --> createboundary: displayAvailableLocalSoundFragments
+        user -> createboundary: selectSoundFragment
+        createboundary -> createcontrol: addSoundFragment
+    else add from file
+        user -> createboundary: selectFromFileSystem
+        ...somehow MapVSSCreateControl got the new SoundFragment # specify during implementation...
+    end
+
+    test -> test: not finished
+    participant ":SoundSource" as source
+    create source
+    createcontrol -> source: <<create>>
+    createcontrol -> source: setSoundFragment
+    user -> createboundary: setSoundSourceMode
+    createboundary -> createcontrol: setSoundSourceMode
+    createcontrol -> source: setSoundSourceMode
+    createcontrol -> newspace: addSoundSource(soundSource)
+    user -> createboundary: setVSSNameAndDescription
+    createboundary -> createcontrol: setVSSNameAndDescription
+    createcontrol -> newspace: setVSSNameAndDescription
+    user -> createboundary: comfirmVSSCreation
+    createboundary -> createcontrol: comfirmVSSCreation
+    createcontrol -> library: addSoundSpace(newSoundSpace)
+    createcontrol -> sensorcontrol: <<destroy>>
+    sensorcontrol -> sensor: <<destroy>>
+    destroy sensorcontrol
+    destroy sensor
+    createcontrol -> createboundary: <<destroy>>
+    destroy createboundary
+    destroy createcontrol
+
+
 end
-deactivate LocalVSSLibraryControl
-deactivate LocalVSSManagerPage
-deactivate User
 @enduml
 ```
+
+
 ## 7.RenameVSS
-![SeqDiagram](./renamevss.svg)
+![SeqDiagram](./SeqDiagram_006.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -189,7 +331,7 @@ deactivate LocalVSSLibraryControl
 @enduml
 ```
 ## 8.DeleteVSS
-![SeqDiagram](./deletevss.svg)
+![SeqDiagram](./SeqDiagram_007.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -213,7 +355,7 @@ deactivate LocalVSSLibraryControl
 @enduml
 ```
 ## 9.UploadVSS
-![SeqDiagram](./uploadvss.svg)
+![SeqDiagram](./SeqDiagram_008.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -243,7 +385,7 @@ deactivate LocalVSSLibraryControl
 @enduml
 ```
 ## 10. PreviewVSS
-![SeqDiagram](./previewvss.svg)
+![SeqDiagram](./SeqDiagram_009.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -284,7 +426,7 @@ deactivate User
 @enduml
 ```
 ## 11. BrowseOnlineVSSLibrary
-![SeqDiagram](./browseonlinevsslibrary.svg)
+![SeqDiagram](./SeqDiagram_010.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -305,7 +447,7 @@ deactivate OnlineVSSLibraryControl
 @enduml
 ```
 ## 12. DownloadVSS
-![SeqDiagram](./downloadvss.svg)
+![SeqDiagram](./SeqDiagram_011.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -332,7 +474,7 @@ deactivate User
 @enduml
 ```
 ## 13. LikeVSS
-![SeqDiagram](./likevss.svg)
+![SeqDiagram](./SeqDiagram_012.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -356,7 +498,7 @@ deactivate User
 @enduml
 ```
 ## 14. CommentVSS
-![SeqDiagram](./commentvss.svg)
+![SeqDiagram](./SeqDiagram_013.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -380,7 +522,7 @@ deactivate User
 @enduml
 ```
 ## 15. PlayVSS
-![SeqDiagram](./playvss.svg)
+![SeqDiagram](./SeqDiagram_014.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -406,7 +548,7 @@ deactivate User
 @enduml
 ```
 ## 16. PlayMapModeVSS
-![SeqDiagram](./playmapmodevss.svg)
+![SeqDiagram](./SeqDiagram_015.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -430,7 +572,7 @@ deactivate User
 @enduml
 ```
 ## 17. PlayConcertModeVSS
-![SeqDiagram](./playconcertmodevss.svg)
+![SeqDiagram](./SeqDiagram_016.svg)
 ```
 @startuml
 actor ":__User__" as User
@@ -453,7 +595,7 @@ deactivate User
 @enduml
 ```
 ## 18. AdjustSensor
-![SeqDiagram](./adjustsensor.svg)
+![SeqDiagram](./SeqDiagram_017.svg)
 ```
 @startuml
 actor ":__User__" as User
