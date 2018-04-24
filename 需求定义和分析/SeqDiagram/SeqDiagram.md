@@ -2,8 +2,8 @@
 
 ## Reference Class List
 
-|Class Name|Description|
-|:-|:-|
+Class Name|Description
+:-|:-
 User|存储各种用户信息
 SoundSource|虚拟声源
 VirtualSoundSpace|虚拟声音空间抽象类
@@ -15,7 +15,7 @@ Comment|评论存储类
 Like|赞存储类
 Sensor|传感器接口
 SoundFragment|声音片段
-|
+-|-
 RegisterPage|注册界面
 LoginPage|登陆界面
 LocalVSSManagerPage|本地VSS管理界面
@@ -24,7 +24,7 @@ VSSViewingPage|进入VSS进行游览
 CreateMapVSSPage*|MapVSS创建
 CreateConcertVSSPage*|ConcertVSS创建
 SensorPage|传感器矫正页面
-|
+-|-
 MapVSSCreateControl*|MapVSS创建控制
 ConcertVSSCreateControl*|ConcertVSS创建控制
 LocalVSSLibraryControl|本地VSS管理界面控制器
