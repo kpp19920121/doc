@@ -21,6 +21,7 @@ LoginPage|登陆界面
 LocalVSSManagerPage|本地VSS管理界面
 OnlineVSSViewerPage|在线VSS浏览界面
 VSSViewingPage|进入VSS进行游览
+CreateVSSPage|VSS创建入口界面
 CreateMapVSSPage*|MapVSS创建
 CreateConcertVSSPage*|ConcertVSS创建
 SensorPage|传感器矫正页面
@@ -152,30 +153,7 @@ end
 hide footbox
 skinparam sequenceParticipant underline
 
-
 actor User as user
-participant ":LocalVSSManagerPage" as boundary
-participant ":LocalVSSLibraryControl" as control
-participant ":MapVSSCreateControl" as createboundary
-participant ":MapVSSCreateControl" as createcontrol
-participant ":LocalSoundSpaceLibrary" as library
-participant ":SensorControl" as sensorcontrol
-participant ":Sensor" as sensor
-
-
-
-user -> boundary: createVSS
-boundary -> control: createVSS
-create createboundary
-control -> createboundary: <<create>>
-create createcontrol
-createboundary -> createcontrol: <<create>>
-create sensorcontrol
-createcontrol -> sensorcontrol: <<create>>
-create sensor
-sensorcontrol -> sensor: <<create>>
-loop add music
-
 @enduml
 ```
 
