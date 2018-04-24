@@ -1,6 +1,7 @@
 # 系统消息顺序图
 
 ## Reference Class List
+
 |Class Name|Description|
 |:-|:-|
 User|存储各种用户信息
@@ -24,11 +25,11 @@ CreateMapVSSPage*|MapVSS创建
 CreateConcertVSSPage*|ConcertVSS创建
 SensorPage|传感器矫正页面
 |
-MapVSSCreateControl*|MapVSS创建控制
+MapVSSCreateControl*|MapVSS创建控制
 ConcertVSSCreateControl*|ConcertVSS创建控制
 LocalVSSLibraryControl|本地VSS管理界面控制器
 OnlineVSSLibraryControl|在线VSS浏览界面控制器
-SensorControl|传感器校准控制器|
+SensorControl|传感器校准控制器|
 ConcertVSSPlayControl*|CVSS播放控制器
 MapVSSPlayControl*|MVSS播放控制器
 GVRAudioEngine*|GVR虚拟声音播放控制器
@@ -70,8 +71,11 @@ control -> nextpage: <<create>>
 destroy control
 @enduml
 ```
+
 ## 2.Login
+
 ![SeqDiagram](./Login.svg)
+
 ```PlantUML
 @startuml Login
 hide footbox
@@ -109,7 +113,9 @@ destroy control
 @enduml
 ```
 ## 3.ManageLocalVSSLibrary
+
 ![SeqDiagram](./ManageLocalVSSLibrary.svg)
+
 ```PlantUML
 @startuml ManageLocalVSSLibrary
 hide footbox
@@ -136,8 +142,11 @@ else PreviewVSS
 end
 @enduml
 ```
+
 ## 4.CreateVSS
+
 ![SeqDiagram](./CreateVSS.svg)
+
 ```PlantUML
 @startuml CreateVSS
 hide footbox
@@ -171,6 +180,7 @@ loop add music
 ```
 
 ## 5.CreateMapModeVSS
+
 ![SeqDiagram](./CreateMapModeVSS.svg)
 
 ```PlantUML
@@ -327,8 +337,8 @@ end
 @enduml
 ```
 
-
 ## 7.RenameVSS
+
 ![SeqDiagram](./RenameVSS.svg)
 
 ```PlantUML
