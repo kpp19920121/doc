@@ -1,8 +1,44 @@
-createcontrol# 系统消息顺序图
+# 系统消息顺序图
+
+## Reference Class List
+|Class Name|Description|
+|:-|:-|
+User|存储各种用户信息
+SoundSource|虚拟声源
+VirtualSoundSpace|虚拟声音空间抽象类
+MapModeVirtualSoundSpace|地图模式虚拟声音空间
+ConcertModeSoundSpace|音乐会模式虚拟声音空间
+LocalSoundSpaceLibrary|本地VSS管理
+OnlineSoundSpaceLibrary|在线VSS管理库
+Comment|评论存储类
+Like|赞存储类
+Sensor|传感器接口
+SoundFragment|声音片段
+|
+RegisterPage|注册界面
+LoginPage|登陆界面
+LocalVSSManagerPage|本地VSS管理界面
+OnlineVSSViewerPage|在线VSS浏览界面
+VSSViewingPage|进入VSS进行游览
+CreateMapVSSPage*|MapVSS创建
+CreateConcertVSSPage*|ConcertVSS创建
+SensorPage|传感器矫正页面
+|
+MapVSSCreateControl*|MapVSS创建控制
+ConcertVSSCreateControl*|ConcertVSS创建控制
+LocalVSSLibraryControl|本地VSS管理界面控制器
+OnlineVSSLibraryControl|在线VSS浏览界面控制器
+SensorControl|传感器校准控制器|
+ConcertVSSPlayControl*|CVSS播放控制器
+MapVSSPlayControl*|MVSS播放控制器
+GVRAudioEngine*|GVR虚拟声音播放控制器
+
+
 ## 1.Register
-![SeqDiagram](./SeqDiagram.svg)
+![SeqDiagram](./Register.svg)
+
 ```PlantUML
-@startuml
+@startuml Register
 hide footbox
 skinparam sequenceParticipant underline
 
@@ -35,9 +71,9 @@ destroy control
 @enduml
 ```
 ## 2.Login
-![SeqDiagram](./SeqDiagram_001.svg)
+![SeqDiagram](./Login.svg)
 ```PlantUML
-@startuml
+@startuml Login
 hide footbox
 skinparam sequenceParticipant underline
 
@@ -73,9 +109,9 @@ destroy control
 @enduml
 ```
 ## 3.ManageLocalVSSLibrary
-![SeqDiagram](./SeqDiagram_002.svg)
+![SeqDiagram](./ManageLocalVSSLibrary.svg)
 ```PlantUML
-@startuml
+@startuml ManageLocalVSSLibrary
 hide footbox
 skinparam sequenceParticipant underline
 
@@ -101,9 +137,9 @@ end
 @enduml
 ```
 ## 4.CreateVSS
-![SeqDiagram](./SeqDiagram_003.svg)
+![SeqDiagram](./CreateVSS.svg)
 ```PlantUML
-@startuml
+@startuml CreateVSS
 hide footbox
 skinparam sequenceParticipant underline
 
@@ -133,10 +169,12 @@ loop add music
 
 @enduml
 ```
+
 ## 5.CreateMapModeVSS
-![SeqDiagram](./SeqDiagram_004.svg)
+![SeqDiagram](./CreateMapModeVSS.svg)
+
 ```PlantUML
-@startuml
+@startuml CreateMapModeVSS
 hide footbox
 skinparam sequenceParticipant underline
 
@@ -147,7 +185,6 @@ participant ":LocalVSSLibraryControl" as control
 participant ":MapVSSCreatePage" as createboundary
 participant ":MapVSSCreateControl" as createcontrol
 participant ":LocalSoundSpaceLibrary" as library
-participant ":SensorControl" as sensorcontrol
 participant ":Sensor" as sensor
 collections "soundSpaces:VirtualSoundSpace" as vsses
 participant "newSoundSpace:MapModeVirtualSoundSpace" as newspace
@@ -162,10 +199,8 @@ create createcontrol
 createboundary -> createcontrol: <<create>>
 create newspace
 createcontrol -> newspace: <<create>>
-create sensorcontrol
-createcontrol -> sensorcontrol: <<create>>
 create sensor
-sensorcontrol -> sensor: <<create>>
+createcontrol -> sensor: <<create>>
 loop add virual sound source
     alt add from library
         user -> createboundary: selectExistedSoundSource
@@ -185,10 +220,8 @@ loop add virual sound source
 
     end
 
-    createcontrol -> sensorcontrol: getCurrentLocation
-    sensorcontrol -> sensor: getCurrentLocation
-    sensor --> sensorcontrol: currentLocation
-    sensorcontrol -> createcontrol: currentLocation
+    createcontrol -> sensor: getCurrentLocation
+    sensor --> createcontrol: currentLocation
 
     participant ":SoundSource" as source
     create source
@@ -225,10 +258,10 @@ end
 
 ## 6.CreateConcertModeVSS
 
-![SeqDiagram](./SeqDiagram_005.svg)
+![SeqDiagram](./CreateConcertModeVSS.svg)
 
 ```PlantUML
-@startuml
+@startuml CreateConcertModeVSS
 hide footbox
 skinparam sequenceParticipant underline
 
@@ -239,8 +272,6 @@ participant ":LocalVSSLibraryControl" as control
 participant ":ConcertVSSCreatePage" as createboundary
 participant ":ConcertVSSCreateControl" as createcontrol
 participant ":LocalSoundSpaceLibrary" as library
-participant ":SensorControl" as sensorcontrol
-participant ":Sensor" as sensor
 collections "soundSpaces:VirtualSoundSpace" as vsses
 participant "newSoundSpace:ConcertModeVirtualSoundSpace" as newspace
 
@@ -254,10 +285,7 @@ create createcontrol
 createboundary -> createcontrol: <<create>>
 create newspace
 createcontrol -> newspace: <<create>>
-create sensorcontrol
-createcontrol -> sensorcontrol: <<create>>
-create sensor
-sensorcontrol -> sensor: <<create>>
+
 loop add virual sound source
     alt add from library
         user -> createboundary: selectExistedSoundSource
@@ -276,14 +304,12 @@ loop add virual sound source
         ...somehow MapVSSCreateControl got the new SoundFragment # specify during implementation...
     end
 
-    test -> test: not finished
+
     participant ":SoundSource" as source
+    user -> user: wakeUp(self)
     create source
     createcontrol -> source: <<create>>
     createcontrol -> source: setSoundFragment
-    user -> createboundary: setSoundSourceMode
-    createboundary -> createcontrol: setSoundSourceMode
-    createcontrol -> source: setSoundSourceMode
     createcontrol -> newspace: addSoundSource(soundSource)
     user -> createboundary: setVSSNameAndDescription
     createboundary -> createcontrol: setVSSNameAndDescription
@@ -291,10 +317,7 @@ loop add virual sound source
     user -> createboundary: comfirmVSSCreation
     createboundary -> createcontrol: comfirmVSSCreation
     createcontrol -> library: addSoundSpace(newSoundSpace)
-    createcontrol -> sensorcontrol: <<destroy>>
-    sensorcontrol -> sensor: <<destroy>>
-    destroy sensorcontrol
-    destroy sensor
+
     createcontrol -> createboundary: <<destroy>>
     destroy createboundary
     destroy createcontrol
@@ -306,315 +329,138 @@ end
 
 
 ## 7.RenameVSS
-![SeqDiagram](./SeqDiagram_006.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__LocalVSSManagerPage__" as LocalVSSManagerPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
-entity ":__LocalSoundSpaceLibrary__" as LocalSoundSpaceLibrary
+![SeqDiagram](./RenameVSS.svg)
 
-activate User
-activate LocalVSSManagerPage
-LocalVSSManagerPage -> LocalVSSLibraryControl: <<create>>
-activate LocalVSSLibraryControl
-User -> LocalVSSManagerPage: RenameVSS()
-loop invalid
-    User -> LocalVSSManagerPage: RenameVSS()
-end
-deactivate User
-deactivate LocalVSSManagerPage
-LocalVSSLibraryControl -> LocalSoundSpaceLibrary: RenameVSS
-activate LocalSoundSpaceLibrary
-deactivate LocalSoundSpaceLibrary
-deactivate LocalVSSLibraryControl
+```PlantUML
+@startuml RenameVSS
+
 @enduml
 ```
+
 ## 8.DeleteVSS
-![SeqDiagram](./SeqDiagram_007.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__LocalVSSManagerPage__" as LocalVSSManagerPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
-entity ":__LocalSoundSpaceLibrary__" as LocalSoundSpaceLibrary
+![SeqDiagram](./DeleteVSS.svg)
 
-activate User
-activate LocalVSSManagerPage
-LocalVSSManagerPage -> LocalVSSLibraryControl: <<create>>
-activate LocalVSSLibraryControl
-User -> LocalVSSManagerPage: DeleteVSS()
-LocalVSSManagerPage -> User: AskIfDeletion()
-User -> LocalVSSManagerPage: ConfirmDeletion()
-deactivate User
-deactivate LocalVSSManagerPage
-LocalVSSLibraryControl -> LocalSoundSpaceLibrary: DeleteVSS
-activate LocalSoundSpaceLibrary
-deactivate LocalSoundSpaceLibrary
-deactivate LocalVSSLibraryControl
+```PlantUML
+@startuml DeleteVSS
+
 @enduml
 ```
+
 ## 9.UploadVSS
-![SeqDiagram](./SeqDiagram_008.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__LocalVSSManagerPage__" as LocalVSSManagerPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
-entity ":__LocalSoundSpaceLibrary__" as LocalSoundSpaceLibrary
-entity ":__OnlineSoundSpaceLibrary__" as OnlineSoundSpaceLibrary
+![SeqDiagram](./UploadVSS.svg)
 
-activate User
-activate LocalVSSManagerPage
-LocalVSSManagerPage -> LocalVSSLibraryControl: <<create>>
-activate LocalVSSLibraryControl
-LocalVSSManagerPage -> User: RemindUploading()
-User -> LocalVSSManagerPage: UploadVSS()
-alt invalid
-    User -> LocalVSSManagerPage: UploadVSS()
-end
-deactivate User
-deactivate LocalVSSManagerPage
-LocalSoundSpaceLibrary -> LocalVSSLibraryControl : VSS
-activate LocalSoundSpaceLibrary
-deactivate LocalSoundSpaceLibrary
-LocalVSSLibraryControl -> OnlineSoundSpaceLibrary: UploadVSS
-activate OnlineSoundSpaceLibrary
-deactivate OnlineSoundSpaceLibrary
-deactivate LocalVSSLibraryControl
+```PlantUML
+@startuml UploadVSS
+
 @enduml
 ```
-## 10. PreviewVSS
-![SeqDiagram](./SeqDiagram_009.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__VSSPreviewerPage__" as VSSPreviewerPage
-control ":__LocalVSSLibraryControl__" as LocalVSSLibraryControl
-control ":__OnlineVSSLibraryControl__" as OnlineVSSLibraryControl
 
-activate User
-activate VSSPreviewerPage
-User -> VSSPreviewerPage: PreviewVSS()
-alt Offline
-    VSSPreviewerPage -> LocalVSSLibraryControl: <<create>>
-    activate LocalVSSLibraryControl
-    User -> VSSPreviewerPage: PlayVSS()
-    LocalVSSLibraryControl -> PlayVSS
-    deactivate LocalVSSLibraryControl
-else Online
-    VSSPreviewerPage -> OnlineVSSLibraryControl: <<create>>
-    activate OnlineVSSLibraryControl
-    alt Download Operation
-        User -> VSSPreviewerPage: DownloadVSS()
-        alt downloaded
-            VSSPreviewerPage -> User: Refuse
-        else not downloaded
-            OnlineVSSLibraryControl -> DownloadVSS
-        end
-    else Like Operation
-        User -> VSSPreviewerPage: LikeVSS()
-        OnlineVSSLibraryControl -> LikeVSS
-    else Comment Operation
-        User -> VSSPreviewerPage: CommentVSS()
-        OnlineVSSLibraryControl -> CommentVSS
-    end
-end
-deactivate OnlineVSSLibraryControl
-deactivate VSSPreviewerPage
-deactivate User
+## 10. LikeVSS
+![SeqDiagram](./LikeVSS.svg)
+
+```PlantUML
+@startuml LikeVSS
+
 @enduml
 ```
-## 11. BrowseOnlineVSSLibrary
-![SeqDiagram](./SeqDiagram_010.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__OnlineVSSViewerPage__" as OnlineVSSViewerPage
-control ":__OnlineVSSLibraryControl__" as OnlineVSSLibraryControl
 
-activate User
-activate OnlineVSSViewerPage
-OnlineVSSViewerPage -> OnlineVSSLibraryControl: <<create>>
-activate OnlineVSSLibraryControl
-User -> OnlineVSSViewerPage: BrowseOnlineVSSLibrary
-OnlineVSSViewerPage -> User: VSSList
-User -> OnlineVSSViewerPage: PreviewVSS
-OnlineVSSLibraryControl -> PreviewVSS
-deactivate User
-deactivate OnlineVSSViewerPage
-deactivate OnlineVSSLibraryControl
+
+## 11. DownloadVSS
+![SeqDiagram](./DownloadVSS.svg)
+
+```PlantUML
+@startuml DownloadVSS
+
 @enduml
 ```
-## 12. DownloadVSS
-![SeqDiagram](./SeqDiagram_011.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__OnlineVSSViewerPage__" as OnlineVSSViewerPage
-control ":__OnlineVSSLibraryControl__" as OnlineVSSLibraryControl
-entity ":__LocalSoundSpaceLibrary__" as LocalSoundSpaceLibrary
-entity ":__OnlineSoundSpaceLibrary__" as OnlineSoundSpaceLibrary
 
-activate User
-activate OnlineVSSViewerPage
-User -> OnlineVSSViewerPage: DownloadVSS()
-OnlineVSSViewerPage -> OnlineVSSLibraryControl: <<create>>
-activate OnlineVSSLibraryControl
-OnlineVSSLibraryControl -> OnlineSoundSpaceLibrary: DownloadVSS
-activate OnlineSoundSpaceLibrary
-OnlineSoundSpaceLibrary -> LocalSoundSpaceLibrary: DownloadVSS
-deactivate OnlineSoundSpaceLibrary
-activate LocalSoundSpaceLibrary
-deactivate LocalSoundSpaceLibrary
-OnlineVSSViewerPage -> User: VSSData
-deactivate OnlineVSSLibraryControl
-deactivate OnlineVSSViewerPage
-deactivate User
+## 12. CommentVSS
+![SeqDiagram](./CommentVSS.svg)
+
+```PlantUML
+@startuml CommentVSS
+
 @enduml
 ```
-## 13. LikeVSS
-![SeqDiagram](./SeqDiagram_012.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__OnlineVSSViewerPage__" as OnlineVSSViewerPage
-control ":__OnlineVSSLibraryControl__" as OnlineVSSLibraryControl
-entity ":__OnlineSoundSpaceLibrary__" as OnlineSoundSpaceLibrary
 
-activate User
-activate OnlineVSSViewerPage
-User -> OnlineVSSViewerPage: LikeVSS
-OnlineVSSViewerPage -> OnlineVSSLibraryControl: <<create>>
-activate OnlineVSSLibraryControl
-OnlineVSSLibraryControl -> OnlineSoundSpaceLibrary: LikeVSS
-activate OnlineSoundSpaceLibrary
-OnlineSoundSpaceLibrary -> OnlineVSSViewerPage: LikeUserList
-deactivate OnlineSoundSpaceLibrary
-OnlineVSSViewerPage -> User: LikeUserList
-deactivate OnlineVSSLibraryControl
-deactivate OnlineVSSViewerPage
-deactivate User
+
+## 13. PlayVSS(Abstract)
+
+## 14. PreviewVSS(???)
+
+## 15. PreviewLocalMapVSS
+![SeqDiagram](./PreviewLocalMapVSS.svg)
+
+```PlantUML
+@startuml PreviewLocalMapVSS
+
 @enduml
 ```
-## 14. CommentVSS
-![SeqDiagram](./SeqDiagram_013.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__OnlineVSSViewerPage__" as OnlineVSSViewerPage
-control ":__OnlineVSSLibraryControl__" as OnlineVSSLibraryControl
-entity ":__OnlineSoundSpaceLibrary__" as OnlineSoundSpaceLibrary
 
-activate User
-activate OnlineVSSViewerPage
-User -> OnlineVSSViewerPage: CommentVSS
-OnlineVSSViewerPage -> OnlineVSSLibraryControl: <<create>>
-activate OnlineVSSLibraryControl
-OnlineVSSLibraryControl -> OnlineSoundSpaceLibrary: CommentVSS
-activate OnlineSoundSpaceLibrary
-OnlineSoundSpaceLibrary -> OnlineVSSViewerPage: HistroyComments
-deactivate OnlineSoundSpaceLibrary
-OnlineVSSViewerPage -> User: HistroyComments
-deactivate OnlineVSSLibraryControl
-deactivate OnlineVSSViewerPage
-deactivate User
+
+## 16. PreviewOnlineMapVSS
+![SeqDiagram](./PreviewOnlineMapVSS.svg)
+
+```PlantUML
+@startuml PreviewOnlineMapVSS
+
 @enduml
 ```
-## 15. PlayVSS
-![SeqDiagram](./SeqDiagram_014.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__VSSViewingPage__" as VSSViewingPage
-control ":__VSSControl__" as VSSControl
 
-activate User
-activate VSSViewingPage
-VSSViewingPage -> VSSControl: <<create>>
-activate VSSControl
-User -> VSSViewingPage: AdjustSensor
-VSSControl -> AdjustSensor
-alt MapMode
-  User -> VSSViewingPage: PlayMapModeVSS
-  VSSControl -> PlayMapModeVSS
-else ConcertMode
-  User -> VSSViewingPage: PlayConcertModeVSS
-  VSSControl -> PlayConcertModeVSS
-end
-deactivate VSSControl
-deactivate VSSViewingPage
-deactivate User
+## 17. PreviewLocalConcertVSS
+![SeqDiagram](./PreviewLocalConcertVSS.svg)
+
+```PlantUML
+@startuml PreviewLocalConcertVSS
+
 @enduml
 ```
-## 16. PlayMapModeVSS
-![SeqDiagram](./SeqDiagram_015.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__VSSViewingPage__" as VSSViewingPage
-control ":__VSSControl__" as VSSControl
-entity ":__Sensor__" as Sensor
 
-activate User
-activate VSSViewingPage
-VSSViewingPage -> VSSControl: <<create>>
-activate VSSControl
-VSSViewingPage -> User: PlayVSSRemindMessage
-activate Sensor
-Sensor -> VSSControl: HeadMovement
-Sensor -> VSSControl: LocationData
-VSSViewingPage -> User: Sound
-deactivate Sensor
-deactivate VSSControl
-deactivate VSSViewingPage
-deactivate User
+
+## 18. PreviewOnlineConcertVSS
+![SeqDiagram](./PreviewOnlineConcertVSS.svg)
+
+```PlantUML
+@startuml PreviewOnlineConcertVSS
+
 @enduml
 ```
-## 17. PlayConcertModeVSS
-![SeqDiagram](./SeqDiagram_016.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__VSSViewingPage__" as VSSViewingPage
-control ":__VSSControl__" as VSSControl
-entity ":__Sensor__" as Sensor
 
-activate User
-activate VSSViewingPage
-VSSViewingPage -> VSSControl: <<create>>
-activate VSSControl
-VSSViewingPage -> User: PlayVSSRemindMessage
-activate Sensor
-Sensor -> VSSControl: HeadMovement
-VSSViewingPage -> User: Sound
-deactivate Sensor
-deactivate VSSControl
-deactivate VSSViewingPage
-deactivate User
+
+## 19. PlayMapModeVSS
+![SeqDiagram](./PlayMapModeVSS.svg)
+
+```PlantUML
+@startuml PlayMapModeVSS
+
 @enduml
 ```
-## 18. AdjustSensor
-![SeqDiagram](./SeqDiagram_017.svg)
-```
-@startuml
-actor ":__User__" as User
-boundary ":__SensorPage__" as SensorPage
-control ":__SensorControl__" as SensorControl
-entity ":__Sensor__" as Sensor
 
-activate User
-activate SensorPage
-SensorPage -> SensorControl: <<create>>
-activate SensorControl
-SensorPage -> User: SystemRemindMessage
-User -> SensorPage: AdjustSensor
-SensorControl -> Sensor: Adjust
-activate Sensor
-Sensor -> SensorControl: Adjust
-deactivate Sensor
-deactivate SensorControl
-deactivate SensorPage
-deactivate User
+
+## 20. PlayConcertModeVSS
+![SeqDiagram](./PlayConcertModeVSS.svg)
+
+```PlantUML
+@startuml PlayConcertModeVSS
+
+@enduml
+```
+
+
+## 21. BrowseOnlineVSSLibrary
+![SeqDiagram](./BrowseOnlineVSSLibrary.svg)
+
+```PlantUML
+@startuml BrowseOnlineVSSLibrary
+
+@enduml
+```
+
+## 22. AdjustSensor
+![SeqDiagram](./AdjustSensor.svg)
+
+```PlantUML
+@startuml AdjustSensor
+
 @enduml
 ```
