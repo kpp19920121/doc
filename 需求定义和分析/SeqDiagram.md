@@ -154,6 +154,26 @@ hide footbox
 skinparam sequenceParticipant underline
 
 actor User as user
+participant ":LocalVSSManagerPage" as manage
+participant ":CreateVSSPage" as page
+participant ":CreateMapVSSPage" as map
+participant ":CreateConcertVSSPage" as concert
+
+user -> manage: createVSS
+create page
+manage -> page: <<create>>
+alt create Map Mode VSS
+    user -> page: createMapModeVSS
+    create map
+    page -> map: <<create>>
+    ...Go to CreateMapVSS...
+else create Concert Mode VSS
+    user -> page: createConcertModeVSS
+    create concert
+    page -> concert: <<create>>
+    ...Go to CreateConcertModeVSS...
+end
+
 @enduml
 ```
 
@@ -168,8 +188,6 @@ skinparam sequenceParticipant underline
 
 
 actor User as user
-participant ":LocalVSSManagerPage" as boundary
-participant ":LocalVSSLibraryControl" as control
 participant ":MapVSSCreatePage" as createboundary
 participant ":MapVSSCreateControl" as createcontrol
 participant ":LocalSoundSpaceLibrary" as library
@@ -178,11 +196,7 @@ collections "soundSpaces:VirtualSoundSpace" as vsses
 participant "newSoundSpace:MapModeVirtualSoundSpace" as newspace
 
 
-
-user -> boundary: createMapModeVSS
-boundary -> control: createMapModeVSS
-create createboundary
-control -> createboundary: <<create>>
+[-> createboundary: <<create>>
 create createcontrol
 createboundary -> createcontrol: <<create>>
 create newspace
@@ -231,12 +245,10 @@ loop add virual sound source
     user -> createboundary: comfirmVSSCreation
     createboundary -> createcontrol: comfirmVSSCreation
     createcontrol -> library: addSoundSpace(newSoundSpace)
-    createcontrol -> sensorcontrol: <<destroy>>
-    sensorcontrol -> sensor: <<destroy>>
-    destroy sensorcontrol
-    destroy sensor
     createcontrol -> createboundary: <<destroy>>
     destroy createboundary
+    createcontrol -> sensor: <<destroy>>
+    destroy sensor
     destroy createcontrol
 
 
@@ -255,20 +267,14 @@ skinparam sequenceParticipant underline
 
 
 actor User as user
-participant ":LocalVSSManagerPage" as boundary
-participant ":LocalVSSLibraryControl" as control
 participant ":ConcertVSSCreatePage" as createboundary
 participant ":ConcertVSSCreateControl" as createcontrol
 participant ":LocalSoundSpaceLibrary" as library
 collections "soundSpaces:VirtualSoundSpace" as vsses
 participant "newSoundSpace:ConcertModeVirtualSoundSpace" as newspace
 
-
-
-user -> boundary: createConcertModeVSS
-boundary -> control: createConcertModeVSS
 create createboundary
-control -> createboundary: <<create>>
+-> createboundary: <<create>>
 create createcontrol
 createboundary -> createcontrol: <<create>>
 create newspace
@@ -321,6 +327,14 @@ end
 
 ```PlantUML
 @startuml RenameVSS
+hide footbox
+skinparam sequenceParticipant underline
+
+actor User as user
+participant ":LocalVSSManagerPage" as page
+participant ":LocalVSSLibraryControl" as library
+
+
 
 @enduml
 ```
