@@ -1,6 +1,14 @@
 # 系统消息顺序图
 
+## Notice
+
+注意到我把一些控制功能交给了Page，因为这些功能太简单了，不用过于担心，MVVM中的Page和视图控制器通过同一个类：**ViewModel** 进行建模即可。因此我们组在设计阶段的类的数量将会减少。
+
+简单起见。软件的任何异常都在开发阶段进行处理，不在设计中设计这部分内容。因过于繁琐。
+
 ## Reference Class List
+
+
 
 Class Name|Description
 :-|:-
@@ -25,12 +33,22 @@ CreateVSSPage|VSS创建入口界面
 CreateMapVSSPage*|MapVSS创建
 CreateConcertVSSPage*|ConcertVSS创建
 SensorPage|传感器矫正页面
+PreviewLocalMapPage|-
+PreviewOnlineMapPage|-
+PreviewOnlineConcertPage|-
+PreviewLocalMapPage|-
+UploadLocalVSSDialog|-
 -|-
+UserInfoControl|用户信息管理控制器
+PreviewLocalConcertControl|-
+PreviewOnlineConcertControl|-
+PreviewLocalMapControl|-
+PreviewOnlineMapControl|-
 MapVSSCreateControl*|MapVSS创建控制
 ConcertVSSCreateControl*|ConcertVSS创建控制
 LocalVSSLibraryControl|本地VSS管理界面控制器
 OnlineVSSLibraryControl|在线VSS浏览界面控制器
-SensorControl|传感器校准控制器|
+SensorControl|传感器校准控制器
 ConcertVSSPlayControl*|CVSS播放控制器
 MapVSSPlayControl*|MVSS播放控制器
 GVRAudioEngine*|GVR虚拟声音播放控制器
@@ -50,8 +68,8 @@ participant ":UserInfoControl" as control
 participant ":User" as userdata
 participant ":LocalVSSManagerPage" as nextpage
 
-create control
-boundary -> control: <<create>>
+note right of control: The UserInfoControl is activated since the start of the entire program.
+
 user -> boundary: enterRegisterData
 boundary -> control: sendRegisterData
 control -> control: checkRegisterData
@@ -88,8 +106,6 @@ participant ":UserInfoControl" as control
 participant ":User" as userdata
 participant ":LocalVSSManagerPage" as nextpage
 
-create control
-boundary -> control: <<create>>
 user -> boundary: enterLoginData
 boundary -> control: sendLoginData
 control -> control: checkLoginData
@@ -124,22 +140,31 @@ skinparam sequenceParticipant underline
 
 actor User as user
 participant ":LocalVSSManagerPage" as boundary
+participant ":LocalVSSLibraryControl" as control
+participant ":LocalSoundSpaceLibrary" as library
+
+create control
+boundary -> control: <<create>>
+control -> library: getLocalVSSList(): List
+library -> control: listOfLocalVSS: List<VirtualSoundSpace>
+control -> boundary: displayVSSList(listOfLocalVSS)
+
 
 alt CreateVSS
     user -> boundary: createVSS
-    ...
+    ...described in PlayVSS...
 else RenameVSS
     user -> boundary: renameVSS
-    ...
+    ...described in RenameVSS...
 else DeleteVSS
     user -> boundary: deleteVSS
-    ...
+    ...described in DeleteVSS...
 else UploadVSS
     user -> boundary: uploadVSS
-    ...
+    ...described in UploadVSS...
 else PreviewVSS
     user -> boundary: previewVSS
-    ...
+    ...described in PreviewVSS...
 end
 @enduml
 ```
@@ -205,6 +230,7 @@ create sensor
 createcontrol -> sensor: <<create>>
 loop add virual sound source
     alt add from library
+        note right of user: Notice that there are no shared SoundSources here, each time, only the SoundFragment object is reused.
         user -> createboundary: selectExistedSoundSource
         createboundary -> createcontrol: getLocalSoundFragments
         createcontrol -> library: getLocalSoundFragments
@@ -282,6 +308,7 @@ createcontrol -> newspace: <<create>>
 
 loop add virual sound source
     alt add from library
+        note right of user: Notice that there are no shared SoundSources here, each time, only the SoundFragment object is reused.
         user -> createboundary: selectExistedSoundSource
         createboundary -> createcontrol: getLocalSoundFragments
         createcontrol -> library: getLocalSoundFragments
@@ -332,9 +359,14 @@ skinparam sequenceParticipant underline
 
 actor User as user
 participant ":LocalVSSManagerPage" as page
-participant ":LocalVSSLibraryControl" as library
+participant ":LocalVSSLibraryControl" as control
+participant "whichVSS:VirtualSoundSpace" as vss
 
-
+user -> page: renameVSS
+user -> page: enterNewLocalVSSName
+note right of control: we directly store the VSS's references from library in LocalVSSLibraryControl
+page -> control: newNameEntered(whichVSS)
+control -> vss: setName(newName)
 
 @enduml
 ```
@@ -344,6 +376,21 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml DeleteVSS
+hide footbox
+skinparam sequenceParticipant underline
+
+actor User as user
+participant ":LocalVSSManagerPage" as page
+participant ":LocalVSSLibraryControl" as control
+participant "whichVSS:VirtualSoundSpace" as vss
+participant ":LocalSoundSpaceLibrary" as library
+
+user -> page: deleteVSS(whichVSS)
+page -> control: deleteVSS(whichVSS)
+
+control -> vss: destroy
+vss -> library: unregister(self)
+destroy vss
 
 @enduml
 ```
@@ -353,7 +400,22 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml UploadVSS
+hide footbox
+skinparam sequenceParticipant underline
 
+actor User as user
+participant ":LocalVSSManagerPage" as page
+participant ":LocalVSSLibraryControl" as control
+participant "whichVSS:VirtualSoundSpace" as vss
+participant ":LocalSoundSpaceLibrary" as library
+
+user -> page: uploadVSS(whichVSS)
+page -> control: uploadVSS(whichVSS)
+
+control -> vss: upload
+vss -> library: beamMeUp(whichVSS)
+...LocalSoundSpaceLibrary doing magic trick, using android system to show download progress...
+...There are no other ways to show that a local sound space is finished uploading other than android system notices...
 @enduml
 ```
 
@@ -362,6 +424,21 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml LikeVSS
+hide footbox
+skinparam sequenceParticipant underline
+actor User as user
+participant ":PreviewOnline***Page" as page
+participant ":PreviewOnline***Control" as control
+participant ":UserInfoControl" as info
+
+user -> page: likeVSS
+page -> control: likeVSS
+control -> info: getCurrentUserID()
+info --> control: currentUserID
+control -> vss: likedBy(currentUserID)
+participant ":Like" as like
+create like
+vss -> like: <<create>>
 
 @enduml
 ```
@@ -372,6 +449,45 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml DownloadVSS
+hide footbox
+skinparam sequenceParticipant underline
+actor User as user
+participant ":PreviewOnline***Page" as page
+participant ":PreviewOnline***Control" as control
+participant "vss:VirtualSoundSpace" as vss
+participant "cloneVSS:VirtualSoundSpace" as clone
+participant ":LocalSoundSpaceLibrary" as library
+user -> page: downloadVSS
+note right of vss: download operation downloads every SoundSource's SoundFragment, a separate local VSS is created.
+note right of vss: every SoundFragment is identified uniquely by MD5 of the file.
+page -> control: downloadVSS
+control -> vss: download
+create clone
+vss -> clone: <<create>>
+vss -> clone: copyMetaDataFrom(vss)
+note right
+MetaData stands for all forms of data only that a VSS contains,
+including SS, SF, but the SFs are not downloaded.
+notice that we copy the references for SoundSources, it should be OK.
+end note
+vss -> library: addSoundSpace(cloneVSS)
+vss -> clone: downloadAll
+note right
+downloadAll makes cloneVSS to attempt to download all its SoundFragments
+end note
+loop for each soundFragment in cloneVSS
+    clone -> library: checkSoundFragmentExist(soundFragment)
+    alt exist
+        library -> clone: sameDownloadedSoundFragment
+    else nonexist
+        library -> clone: null
+    end
+    note right
+        because we want to have simpler data structure, we got complex procedures
+    end note
+end
+
+
 
 @enduml
 ```
@@ -381,20 +497,49 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml CommentVSS
+hide footbox
+skinparam sequenceParticipant underline
+actor User as user
+participant ":PreviewOnline***Page" as page
+participant ":PreviewOnline***Control" as control
+participant ":UserInfoControl" as info
+participant "vss:VirtualSoundSpace" as vss
 
+user -> page: submitComment(comment: String)
+page -> control: submitComment(commit: String)
+control -> info: getCurrentUserID()
+info --> control: currentUserID
+control -> vss: addCommit(userid, comment)
+participant ":Comment" as comment
+create comment
+vss -> comment: <<create>>
 @enduml
 ```
 
 
 ## 13. PlayVSS(Abstract)
 
-## 14. PreviewVSS(???)
+## 14. PreviewVSS(Abstract)
 
 ## 15. PreviewLocalMapVSS
 ![SeqDiagram](./PreviewLocalMapVSS.svg)
 
 ```PlantUML
 @startuml PreviewLocalMapVSS
+hide footbox
+skinparam sequenceParticipant underline
+participant ":PreviewLocalMapPage" as page
+participant ":PreviewLocalMapControl" as control
+participant "localMapVSS:VirtualSoundSpace" as vss
+create page
+[-> page: <<create>>
+create control
+page -> control: <<create>>
+control -> vss: get metadata
+vss --> control: metadata
+control -> page: display metadata
+
+
 
 @enduml
 ```
@@ -405,7 +550,23 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml PreviewOnlineMapVSS
+hide footbox
+skinparam sequenceParticipant underline
+actor User as user
 
+participant ":PreviewOnlineMapPage" as page
+participant ":PreviewOnlineMapControl" as control
+participant "onlineMapVSS:VirtualSoundSpace" as vss
+create page
+[-> page: <<create>>
+create control
+page -> control: <<create>>
+control -> vss: get metadata
+vss -> control: metadata
+control -> page: display metadata
+note right
+details are left out for designs.
+end note
 @enduml
 ```
 
@@ -414,7 +575,23 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml PreviewLocalConcertVSS
+hide footbox
+skinparam sequenceParticipant underline
+actor User as user
 
+participant ":PreviewLocalConcertPage" as page
+participant ":PreviewLocalConcertControl" as control
+participant "localConcertVSS:VirtualSoundSpace" as vss
+create page
+[-> page: <<create>>
+create control
+page -> control: <<create>>
+control -> vss: get metadata
+vss -> control: metadata
+control -> page: display metadata
+note right
+details are left out for designs.
+end note
 @enduml
 ```
 
@@ -424,7 +601,23 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml PreviewOnlineConcertVSS
+hide footbox
+skinparam sequenceParticipant underline
+actor User as user
 
+participant ":PreviewConcer" as page
+participant ":PreviewOnlineConcertPage" as control
+participant "onlineConcertVSS:VirtualSoundSpace" as vss
+create page
+[-> page: <<create>>
+create control
+page -> control: <<create>>
+control -> vss: get metadata
+vss -> control: metadata
+control -> page: display metadata
+note right
+details are left out for designs.
+end note
 @enduml
 ```
 
@@ -444,6 +637,9 @@ participant ":LocalVSSLibraryControl" as library
 
 ```PlantUML
 @startuml PlayConcertModeVSS
+hide footbox
+skinparam sequenceParticipant underline
+actor User as user
 
 @enduml
 ```
