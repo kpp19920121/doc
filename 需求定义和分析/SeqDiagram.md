@@ -16,7 +16,7 @@ User|存储各种用户信息
 SoundSource|虚拟声源
 VirtualSoundSpace|虚拟声音空间抽象类
 MapModeVirtualSoundSpace|地图模式虚拟声音空间
-ConcertModeSoundSpace|音乐会模式虚拟声音空间
+ConcertModeVirtualSoundSpace|音乐会模式虚拟声音空间
 LocalSoundSpaceLibrary|本地VSS管理
 OnlineSoundSpaceLibrary|在线VSS管理库
 Comment|评论存储类
@@ -28,7 +28,9 @@ RegisterPage|注册界面
 LoginPage|登陆界面
 LocalVSSManagerPage|本地VSS管理界面
 OnlineVSSViewerPage|在线VSS浏览界面
-VSSViewingPage|进入VSS进行游览
+VSSViewingPage-|进入VSS进行游览
+PlayMapModeVSSPage*|-
+PlayConcertModeVSSPage*|-
 CreateVSSPage|VSS创建入口界面
 CreateMapVSSPage*|MapVSS创建
 CreateConcertVSSPage*|ConcertVSS创建
@@ -143,9 +145,11 @@ participant ":LocalVSSManagerPage" as boundary
 participant ":LocalVSSLibraryControl" as control
 participant ":LocalSoundSpaceLibrary" as library
 
+create boundary
+[-> boundary: <<create>>
 create control
 boundary -> control: <<create>>
-control -> library: getLocalVSSList(): List
+control -> library: getVSSList(): List
 library -> control: listOfLocalVSS: List<VirtualSoundSpace>
 control -> boundary: displayVSSList(listOfLocalVSS)
 
@@ -154,17 +158,27 @@ alt CreateVSS
     user -> boundary: createVSS
     ...described in PlayVSS...
 else RenameVSS
-    user -> boundary: renameVSS
+    user -> boundary: renameVSS(whichVSS)
     ...described in RenameVSS...
 else DeleteVSS
-    user -> boundary: deleteVSS
+    user -> boundary: deleteVSS(whichVSS)
     ...described in DeleteVSS...
 else UploadVSS
-    user -> boundary: uploadVSS
+    user -> boundary: uploadVSS(whichVSS)
     ...described in UploadVSS...
 else PreviewVSS
-    user -> boundary: previewVSS
-    ...described in PreviewVSS...
+    user -> boundary: previewVSS(whichVSS)
+    boundary -> control: previewVSS(whichVSS)
+    alt local map
+        participant ":PreviewLocalMapPage" as plmp
+        create plmp
+        control -> plmp: <<create>>
+
+    else local concert
+        participant ":PreviewLocalConcertPage" as plcp
+        create plcp
+        control -> plcp: <<create>>
+    end
 end
 @enduml
 ```
@@ -627,6 +641,68 @@ end note
 
 ```PlantUML
 @startuml PlayMapModeVSS
+hide footbox
+skinparam sequenceParticipant underline
+
+actor User as user
+participant ":PlayMapModeVSSPage" as page
+participant ":MapVSSPlayControl" as control
+participant ":MapModeVirtualSoundSpace" as vss
+participant ":Sensor" as sensor
+participant ":GVRAudioEngine" as audio
+participant ":AdjustSensor" as adpage
+
+create page
+[-> page: <<create>>
+create control
+page -> control: <<create>>
+control -> vss: getSoundSources()
+vss --> control: soundSourceList
+control -> page: displaySoundSourceList
+create sensor
+control -> sensor: <<create>>
+create audio
+control -> audio: <<create>>
+create adpage
+control -> adpage: <<create>>
+...adjust sensor...
+user -> user: wakeup
+destroy adpage
+loop
+    control -\ sensor: getCurrentLocation()
+    note right
+    async message, in another thread
+    end note
+    sensor --\ control: currentLocation
+    control -> audio: updateCurrentLocation(currentLocation)
+
+    alt startPlay
+        user -> page: play(soundSource)
+        page -> control: play(soundSource)
+        control -> audio: play(soundFragment)
+    else pause
+        user -> page: pause()
+        page -> control: pause()
+        control -> audio: pause()
+    else next
+        user -> page: next()
+        page -> control: play(soundSource)
+        control -> audio: play(soundFragment)
+    else prev
+        user -> page: prev()
+        page -> control: play(soundSource)
+        control -> audio: play(soundFragment)
+    end
+end
+control -> audio: stopAll()
+control -> audio: <<destroy>>
+destroy audio
+control -> sensor: <<destroy>>
+destroy sensor
+control -> page: <<destroy>>
+destroy page
+destroy control
+
 
 @enduml
 ```
@@ -639,7 +715,65 @@ end note
 @startuml PlayConcertModeVSS
 hide footbox
 skinparam sequenceParticipant underline
+
 actor User as user
+participant ":PlayConcertModeVSSPage" as page
+participant ":ConcertVSSPlayControl" as control
+participant ":ConcertModeVirtualSoundSpace" as vss
+participant ":Sensor" as sensor
+participant ":GVRAudioEngine" as audio
+participant ":AdjustSensor" as adpage
+
+create page
+[-> page: <<create>>
+create control
+page -> control: <<create>>
+control -> vss: getSoundSources()
+vss --> control: soundSourceList
+control -> page: displaySoundSourceList
+create sensor
+control -> sensor: <<create>>
+create audio
+control -> audio: <<create>>
+create adpage
+control -> adpage: <<create>>
+...adjust sensor...
+user -> user: wakeup
+destroy adpage
+loop
+    control -\ sensor: getCurrentLocation()
+    note right
+    async message, in another thread
+    end note
+    sensor --\ control: currentLocation
+    control -> audio: updateCurrentLocation(currentLocation)
+
+    alt startPlay
+        user -> page: play(soundSource)
+        page -> control: play(soundSource)
+        control -> audio: play(soundFragment)
+    else pause
+        user -> page: pause()
+        page -> control: pause()
+        control -> audio: pause()
+    else next
+        user -> page: next()
+        page -> control: play(soundSource)
+        control -> audio: play(soundFragment)
+    else prev
+        user -> page: prev()
+        page -> control: play(soundSource)
+        control -> audio: play(soundFragment)
+    end
+end
+control -> audio: stopAll()
+control -> audio: <<destroy>>
+destroy audio
+control -> sensor: <<destroy>>
+destroy sensor
+control -> page: <<destroy>>
+destroy page
+destroy control
 
 @enduml
 ```
@@ -650,6 +784,37 @@ actor User as user
 
 ```PlantUML
 @startuml BrowseOnlineVSSLibrary
+hide footbox
+skinparam sequenceParticipant underline
+
+actor User as user
+participant ":OnlineVSSViewerPage" as page
+participant ":OnlineVSSLibraryControl" as control
+participant ":OnlineSoundSpaceLibrary" as library
+
+
+
+create page
+[-> page: <<create>>
+create control
+page -> control: <<create>>
+control -> library: getVSSList()
+library --> control: listOfOnlineVSS
+control -> page: displayVSSList(listOfOnlineVSS)
+alt previewVSS
+    user -> page: previewVSS(whichVSS)
+    page -> control: previewVSS(whichVSS)
+    alt concert mode vss is selected
+        participant ":PreviewOnlineConcertPage" as pocp
+        create pocp
+        control -> pocp: <<create>>
+    else map mode vss is selected
+        participant ":PreviewOnlineMapPage" as pomp
+        create pomp
+        control -> pomp: <<create>>
+
+    end
+end
 
 @enduml
 ```
@@ -659,6 +824,34 @@ actor User as user
 
 ```PlantUML
 @startuml AdjustSensor
+hide footbox
+skinparam sequenceParticipant underline
+
+actor User as user
+participant ":SensorPage" as page
+participant ":SensorControl" as control
+participant ":Sensor" as sensor
+
+[-> page: <<create>>
+note over control: Sensor control should be coupled with Sensor
+create control
+page -> control: <<create>>
+note right of sensor: this sensor object is created before adjusting sensor
+loop for each operation
+    control -> page: demand
+    page -> user: demand
+    loop while adjust demand satisfied
+        user -> user: move
+        sensor -> sensor: collectData
+    end
+    sensor -> control: demandSatisfied
+end
+
+control -> page: <<destroy>>
+destroy page
+destroy control
+
+
 
 @enduml
 ```
