@@ -26,10 +26,10 @@
 要不然保证不了Hash的唯一性
 
 #### VSS，SS，SF，User通过什么进行识别？
-首先，FS声音文件对象应该通过计算文件的Hash值（文件的二进制串）进行唯一性标记。
-SS对象应该用声音源属性和声音文件对象的Hash值进行Hash作为唯一标记。
-VSS对象应该通过SS对象的Hash值之和进行Hash作为唯一标记。
-User通过用户名进行唯一标记。
+首先，SF声音文件对象应该通过计算文件的Hash值（文件的二进制串）进行唯一性标记。
+SS作为SF搬运工不需要判断；
+User利用用户名
+VSS由于其不可复制性，直接使用Unix时间当作id进行编号判断重复。
 
 需要判断重复的地方，按照用例的顺序进行排列，需要联网进行在线查重的地方会进行标注
 |Potential Use Case|Class|Online Check Needed|
@@ -39,52 +39,9 @@ User通过用户名进行唯一标记。
 |UploadVSS|VSS|需要，每次上传都需要联网判断是否已经上传，如果已经上传，系统不进行反应。允许使用已经存在的名称，但不允许完全相同的两个VSS存在。这种情况可能在用户上传一个刚刚下载过的VSS时出现|
 |DownloadVSS|VSS|不需要，每次下载的时候在本地查看是否已经有重复的VSS，如果已经存在，系统不反应。这种情况可能在用户下载一个刚刚上传过的VSS时出现|
 
-#### Reference Class List
+#### Controller
 
 视图控制还是系统控制器？在说明里有标记。系统控制器将会各种地方被使用，但是视图控制器在设计的时候会变成一个ViewModel。
-
-Class Name|Description
-:-|:-
-User|存储各种用户信息
-SoundSource|虚拟声源
-VirtualSoundSpace|虚拟声音空间抽象类
-MapModeVirtualSoundSpace|地图模式虚拟声音空间
-ConcertModeVirtualSoundSpace|音乐会模式虚拟声音空间
-LocalSoundSpaceLibrary|本地VSS管理
-OnlineSoundSpaceLibrary|在线VSS管理库
-Sensor|传感器接口类
-SoundFragment|声音片段
--|-
-RegisterPage|注册界面
-LoginPage|登陆界面
-LocalVSSManagerPage|本地VSS管理界面
-OnlineVSSViewerPage|在线VSS浏览界面
-VSSViewingPage-|进入VSS进行游览
-PlayMapModeVSSPage*|-
-PlayConcertModeVSSPage*|-
-CreateVSSPage|VSS创建入口界面
-CreateMapVSSPage*|MapVSS创建
-CreateConcertVSSPage*|ConcertVSS创建
-SensorPage|传感器矫正页面
-PreviewLocalMapPage|-
-PreviewOnlineMapPage|-
-PreviewOnlineConcertPage|-
-PreviewLocalMapPage|-
-UploadLocalVSSDialog|-
--|-
-UserInfoControl|用户信息管理控制器，同时作为系统控制器和视图控制器
-PreviewLocalConcertControl|视图控制器
-PreviewOnlineConcertControl|视图控制器
-PreviewLocalMapControl|视图控制器
-PreviewOnlineMapControl|视图控制器
-MapVSSCreateControl*|MapVSS创建控制，视图控制器
-ConcertVSSCreateControl*|ConcertVSS创建控制，视图控制器
-LocalVSSLibraryControl|本地VSS管理界面控制器，视图控制器
-OnlineVSSLibraryControl|在线VSS浏览界面控制器，视图控制器
-SensorControl|传感器校准控制器，视图控制器
-ConcertVSSPlayControl*|CVSS播放控制器，视图控制器
-MapVSSPlayControl*|MVSS播放控制器，视图控制器
-GVRAudioEngine*|GVR虚拟声音播放控制器，系统控制器
 
 
 ## 1.Register
@@ -237,8 +194,8 @@ skinparam sequenceParticipant underline
 actor User as user
 participant ":LocalVSSManagerPage" as manage
 participant ":CreateVSSPage" as page
-participant ":MapVSSCreatePage" as map
-participant ":ConcertVSSCreatePage" as concert
+participant ":CreateMapVSSPage" as map
+participant ":CreateConcertVSSPage" as concert
 
 user -> manage: createVSS
 create page
@@ -269,8 +226,8 @@ skinparam sequenceParticipant underline
 
 
 actor User as user
-participant ":MapVSSCreatePage" as createboundary
-participant ":MapVSSCreateControl" as createcontrol
+participant ":CreateMapVSSPage" as createboundary
+participant ":CreateMapVSSControl" as createcontrol
 participant ":LocalSoundSpaceLibrary" as library
 participant ":Sensor" as sensor
 participant "newSoundSpace:MapModeVirtualSoundSpace" as newspace
@@ -295,7 +252,7 @@ loop add virual sound source
         createboundary -> createcontrol: addSoundFragment
     else add from file
         user -> createboundary: selectFromFileSystem
-        ...somehow MapVSSCreateControl got the new SoundFragment # specify during implementation...
+        ...somehow CreateMapVSSControl got the new SoundFragment # specify during implementation...
 
     end
 
@@ -352,8 +309,8 @@ skinparam sequenceParticipant underline
 
 
 actor User as user
-participant ":ConcertVSSCreatePage" as createboundary
-participant ":ConcertVSSCreateControl" as createcontrol
+participant ":CreateConcertVSSPage" as createboundary
+participant ":CreateConcertVSSControl" as createcontrol
 participant ":LocalSoundSpaceLibrary" as library
 participant "newSoundSpace:ConcertModeVirtualSoundSpace" as newspace
 
@@ -376,7 +333,7 @@ loop add virual sound source
         createboundary -> createcontrol: addSoundFragment
     else add from file
         user -> createboundary: selectFromFileSystem
-        ...somehow MapVSSCreateControl got the new SoundFragment # specify during implementation...
+        ...somehow CreateMapVSSControl got the new SoundFragment # specify during implementation...
     end
 
 
@@ -701,7 +658,7 @@ participant ":LocalSoundSpaceLibrary" as library
 participant "thisVSS:MapModeVirtualSoundSpace" as vss
 participant ":Sensor" as sensor
 participant ":GVRAudioEngine" as audio
-participant ":AdjustSensor" as adpage
+participant ":AdjustSensorPage" as adpage
 
 create page
 [-> page: <<create>>
@@ -784,7 +741,7 @@ participant ":ConcertModeVirtualSoundSpace" as vss
 participant ":LocalSoundSpaceLibrary" as library
 participant ":Sensor" as sensor
 participant ":GVRAudioEngine" as audio
-participant ":AdjustSensor" as adpage
+participant ":AdjustSensorPage" as adpage
 
 create page
 [-> page: <<create>>
@@ -908,8 +865,8 @@ hide footbox
 skinparam sequenceParticipant underline
 
 actor User as user
-participant ":SensorPage" as page
-participant ":SensorControl" as control
+participant ":AdjustSensorPage" as page
+participant ":AdjustSensorControl" as control
 participant ":Sensor" as sensor
 
 [-> page: <<create>>
@@ -942,6 +899,18 @@ destroy control
 
 ```PlantUML
 @startuml ClassDiagram
+skinparam class {
+	BackgroundColor PaleGreen
+	ArrowColor SeaGreen
+	BorderColor SpringGreen
+	BackgroundColor<<boundary>> LightBlue
+	BorderColor<<boundary>> Blue
+    BackgroundColor<<control>> LightGray
+    BorderColor<<control>> Red
+    BackgroundColor<<entity>> LightYellow
+    BorderColor<<entity>> Yellow
+}
+
 
 class RegisterPage <<boundary>> {
 
@@ -973,13 +942,10 @@ class PreviewLocalConcertPage <<boundary>> {
 class CreateVSSPage <<boundary>> {
 
 }
-class CreateConcertVSSPage <<boundary>> {
+class CreateMapVSSPage <<boundary>> {
 
 }
-class MapVSSCreatePage <<boundary>> {
-
-}
-class MapVSSCreateControl <<control>> {
+class CreateMapVSSControl <<control>> {
 
 }
 class Sensor <<entity>> {
@@ -997,10 +963,10 @@ abstract VirtualSoundSpace <<entity>> {
 class SoundSource <<entity>> {
 
 }
-class ConcertVSSCreatePage <<boundary>> {
+class CreateConcertVSSPage <<boundary>> {
 
 }
-class ConcertVSSCreateControl <<control>> {
+class CreateConcertVSSControl <<control>> {
 
 }
 class PreviewOnlineMapPage <<boundary>> {
@@ -1018,26 +984,65 @@ class PreviewOnlineConcertControl <<control>> {
 class OnlineSoundSpaceLibrary <<entity>> {
 
 }
+class PreviewLocalMapControl <<control>> {
+
+}
+class PreviewLocalConcertControl <<control>> {
+
+}
+class PlayMapModeVSSPage <<boundary>> {
+
+}
+class MapVSSPlayControl <<control>> {
+
+}
+class LocalSoundSpaceLibrary <<entity>> {
+
+}
+class GVRAudioEngine <<control>> {
+
+}
+class AdjustSensorPage <<boundary>> {
+
+}
+class PlayConcertModeVSSPage <<boundary>> {
+
+}
+class ConcertVSSPlayControl <<control>> {
+
+}
+class OnlineVSSViewerPage <<boundary>> {
+
+}
+class AdjustSensorControl <<control>> {
+
+}
+class SoundFragment <<entity>> {
+
+}
+class OnlineVSSLibraryControl <<control>> {
+
+}
 
 
 UserInfoControl o-- User
 LocalVSSManagerPage "view" .. "controller" LocalVSSLibraryControl
 LocalVSSLibraryControl ..> LocalSoundSpaceLibrary
-MapVSSCreatePage .. MapVSSCreateControl
-MapVSSCreateControl ..> LocalSoundSpaceLibrary
+CreateMapVSSPage .. CreateMapVSSControl
+CreateMapVSSControl ..> LocalSoundSpaceLibrary
 LocalSoundSpaceLibrary ..> VirtualSoundSpace
 VirtualSoundSpace <|-- ConcertModeVirtualSoundSpace
 VirtualSoundSpace <|-- MapModeVirtualSoundSpace
 LoginPage ..> UserInfoControl
 RegisterPage ..> UserInfoControl
-MapVSSCreateControl ..> Sensor
-MapVSSCreateControl ..> MapModeVirtualSoundSpace
-MapVSSCreateControl ..> SoundSource
+CreateMapVSSControl ..> Sensor
+CreateMapVSSControl ..> VirtualSoundSpace
+CreateMapVSSControl ..> SoundSource
 VirtualSoundSpace o-- SoundSource
-ConcertVSSCreatePage .. ConcertVSSCreateControl
-ConcertVSSCreateControl ..> ConcertModeVirtualSoundSpace
-ConcertVSSCreateControl ..> LocalSoundSpaceLibrary
-ConcertVSSCreateControl ..> SoundSource
+CreateConcertVSSPage .. CreateConcertVSSControl
+CreateConcertVSSControl ..> VirtualSoundSpace
+CreateConcertVSSControl ..> LocalSoundSpaceLibrary
+CreateConcertVSSControl ..> SoundSource
 PreviewOnlineConcertPage .. PreviewOnlineConcertControl
 PreviewOnlineMapPage .. PreviewOnlineMapControl
 PreviewOnlineMapControl ..> UserInfoControl
@@ -1046,6 +1051,84 @@ PreviewOnlineMapControl ..> OnlineSoundSpaceLibrary
 PreviewOnlineConcertControl ..> OnlineSoundSpaceLibrary
 OnlineSoundSpaceLibrary ..> VirtualSoundSpace
 OnlineSoundSpaceLibrary .. LocalSoundSpaceLibrary
+PreviewLocalMapPage .. PreviewLocalMapControl
+PreviewLocalConcertPage .. PreviewLocalConcertControl
+PreviewLocalConcertControl ..> VirtualSoundSpace
+PreviewLocalMapControl ..> VirtualSoundSpace
+CreateVSSPage ..> CreateMapVSSPage
+CreateVSSPage ..> CreateConcertVSSPage
+PlayMapModeVSSPage .. MapVSSPlayControl
+MapVSSPlayControl ..> LocalSoundSpaceLibrary
+MapVSSPlayControl ..> VirtualSoundSpace
+MapVSSPlayControl ..> Sensor
+MapVSSPlayControl ..> GVRAudioEngine
+MapVSSPlayControl ..> AdjustSensorPage
+PlayConcertModeVSSPage .. ConcertVSSPlayControl
+ConcertVSSPlayControl ..> LocalSoundSpaceLibrary
+ConcertVSSPlayControl ..> Sensor
+ConcertVSSPlayControl ..> GVRAudioEngine
+ConcertVSSPlayControl ..> AdjustSensorPage
+OnlineVSSViewerPage .. OnlineVSSLibraryControl
+OnlineVSSLibraryControl ..> PreviewOnlineConcertPage
+OnlineVSSLibraryControl ..> PreviewOnlineMapPage
+AdjustSensorPage .. AdjustSensorControl
+AdjustSensorControl .. Sensor
+SoundFragment "1" <-- "1" SoundSource
+CreateMapVSSControl ..> SoundFragment
+CreateConcertVSSControl ..> SoundFragment
 
 @enduml
 ```
+
+## List of Classes
+
+### Entity Classes
+
+Class Name|Description|Attributes
+:-|:-|:-
+User|User类保存了使用该系统的一个用户的相关信息，包括用户名、密码、邮箱及用户ID。|username<br>id
+SoundSource|SoundSource类是用户为创建VSS，从本地VSS库可以访问到的所有VSS中提取出来的SoundSource或本地直接上传到系统上的虚拟声源，保存一个SoundFragment、虚拟声源名称、经纬度、高度、音量、播放模式及虚拟声源ID|position<br>volume<br>playPattern<br>id
+VirtualSoundSpace|虚拟声音空间抽象类|name<br>id<br>ownerID<br>comments<br>likes
+MapModeVirtualSoundSpace|地图模式虚拟声音空间|-
+ConcertModeVirtualSoundSpace|音乐会模式虚拟声音空间|-
+LocalSoundSpaceLibrary|本地VSS管理|-
+OnlineSoundSpaceLibrary|在线VSS管理库|-
+Sensor|传感器接口类|-
+SoundFragment|声音片段|filename<br>length
+
+### Boundary Classes
+
+Class Name|Description
+:-|:-
+RegisterPage|注册界面
+LoginPage|登陆界面
+LocalVSSManagerPage|本地VSS管理界面
+OnlineVSSViewerPage|在线VSS浏览界面
+PlayMapModeVSSPage|游览Map模式VSS
+PlayConcertModeVSSPage|游览Concert模式VSS
+CreateVSSPage|VSS创建入口界面
+CreateMapVSSPage|MapVSS创建
+CreateConcertVSSPage|ConcertVSS创建
+AdjustSensorPage|传感器矫正页面
+PreviewLocalMapPage|-
+PreviewOnlineMapPage|-
+PreviewOnlineConcertPage|-
+PreviewLocalMapPage|-
+
+### Control Classes
+
+Class Name|Description
+:-|:-
+UserInfoControl|用户信息管理控制器，同时作为系统控制器和视图控制器
+PreviewLocalConcertControl|视图控制器
+PreviewOnlineConcertControl|视图控制器
+PreviewLocalMapControl|视图控制器
+PreviewOnlineMapControl|视图控制器
+CreateMapVSSControl|MapVSS创建控制，视图控制器
+CreateConcertVSSControl|ConcertVSS创建控制，视图控制器
+LocalVSSLibraryControl|本地VSS管理界面控制器，视图控制器
+OnlineVSSLibraryControl|在线VSS浏览界面控制器，视图控制器
+AdjustSensorControl|传感器校准控制器，视图控制器
+ConcertVSSPlayControl|CVSS播放控制器，视图控制器
+MapVSSPlayControl|MVSS播放控制器，视图控制器
+GVRAudioEngine|GVR虚拟声音播放控制器，系统控制器
