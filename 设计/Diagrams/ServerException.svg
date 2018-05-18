@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="170px" preserveAspectRatio="none" style="width:290px;height:170px;" version="1.1" viewBox="0 0 290 170"
+    width="290px" zoomAndPan="magnify"><defs><filter height="300%" id="f1lhh7bacvmzuh" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><rect fill="#FFFFFF" filter="url(#f1lhh7bacvmzuh)" height="83.2861" style="stroke: #000000; stroke-width: 2.0;" width="266" x="13" y="58.1201"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="57" x2="57" y1="41.1201" y2="158.4063"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="140" x2="140" y1="41.1201" y2="158.4063"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="229" x2="229" y1="41.1201" y2="158.4063"/><rect fill="#FEFECE" filter="url(#f1lhh7bacvmzuh)" height="33.1201" style="stroke: #A80036; stroke-width: 1.5;" width="64" x="23" y="3"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="4" x="30" y="26.0439">:</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="46" x="34" y="26.0439">System</text><line style="stroke: #000000; stroke-width: 1.0;" x1="34" x2="80" y1="28.0439" y2="28.0439"/><rect fill="#FEFECE" filter="url(#f1lhh7bacvmzuh)" height="33.1201" style="stroke: #A80036; stroke-width: 1.5;" width="75" x="101" y="3"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="61" x="108" y="26.0439">ServerOn</text><rect fill="#FEFECE" filter="url(#f1lhh7bacvmzuh)" height="33.1201" style="stroke: #A80036; stroke-width: 1.5;" width="75" x="190" y="3"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="61" x="197" y="26.0439">ServerOff</text><path d="M13,58.1201 L74,58.1201 L74,67.1201 L64,77.1201 L13,77.1201 L13,58.1201 " fill="#EEEEEE" style="stroke: #000000; stroke-width: 1.0;"/><rect fill="none" height="83.2861" style="stroke: #000000; stroke-width: 2.0;" width="266" x="13" y="58.1201"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="16" x="28" y="74.0181">alt</text><text fill="#000000" font-family="sans-serif" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="144" x="89" y="72.7261">[Database not self-solved]</text><polygon fill="#A80036" points="217.5,96.8975,227.5,100.8975,217.5,104.8975,221.5,100.8975" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="57" x2="223.5" y1="100.8975" y2="100.8975"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="29" x="64" y="96.7954">enter</text><polygon fill="#A80036" points="128.5,128.6519,138.5,132.6519,128.5,136.6519,132.5,132.6519" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="57" x2="134.5" y1="132.6519" y2="132.6519"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="29" x="64" y="128.5498">enter</text><!--
+@startuml
+hide footbox
+Participant ":__System__" as System
+Participant ServerOn
+Participant ServerOff
+
+alt Database not self-solved
+    System -> ServerOff: enter
+    System -> ServerOn: enter
+end
+@enduml
+
+PlantUML version 1.2018.01(Mon Jan 29 02:08:22 CST 2018)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) Client VM
+Java Version: 1.8.0_144-b01
+Operating System: Windows 10
+OS Version: 10.0
+Default Encoding: GBK
+Language: zh
+Country: CN
+--></g></svg>
